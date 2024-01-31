@@ -4,6 +4,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import palette from './pallete';
 import { BrowserRouter } from 'react-router-dom';
 import Router from './routes';
+import { AlertContextProvider } from './context/AlertContext';
 
 const theme = createTheme({
   typography: {
@@ -16,10 +17,12 @@ const theme = createTheme({
 function App(): JSX.Element {
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <BrowserRouter>
-        <Router />
-      </BrowserRouter>
+      <AlertContextProvider>
+        <CssBaseline />
+        <BrowserRouter>
+          <Router />
+        </BrowserRouter>
+      </AlertContextProvider>
     </ThemeProvider>
   ); 
 }

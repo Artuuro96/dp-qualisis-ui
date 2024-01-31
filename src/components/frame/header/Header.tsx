@@ -1,10 +1,12 @@
 import { styled } from '@mui/material/styles';
-import { Box, Stack, AppBar, Toolbar, IconButton } from '@mui/material';
+import { Box, Stack, AppBar, Toolbar, IconButton, Typography } from '@mui/material';
 import AccountPopover from './AccountPopover';
 import MenuIcon from '@mui/icons-material/Menu';
+import { useTitleContext } from '../../../context/TitleContext';
 
 
-const NAV_WIDTH = 280;
+
+const NAV_WIDTH = 249;
 
 const HEADER_MOBILE = 40;
 
@@ -29,6 +31,7 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 
 
 export default function Header({ onOpenNav }: { onOpenNav: () => void }) {
+  const { title } = useTitleContext();
   return (
     <StyledRoot>
       <StyledToolbar>
@@ -44,6 +47,10 @@ export default function Header({ onOpenNav }: { onOpenNav: () => void }) {
         </IconButton>
 
         {/* <Searchbar /> */}
+      
+        <Typography variant='h5' color={'black'}>
+          {title}
+        </Typography>
         <Box sx={{ flexGrow: 1 }} />
 
         <Stack

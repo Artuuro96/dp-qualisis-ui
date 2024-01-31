@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import { Box, ButtonBase, Typography } from '@mui/material';
-import { SideNavProps } from '../../interfaces/side-nav.interface';
+import { SideNavProps } from '../../../interfaces/side-nav.interface';
 
 
 export const SideNavItem = (sideNavProps: SideNavProps) => {

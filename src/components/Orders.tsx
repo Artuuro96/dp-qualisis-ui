@@ -5,7 +5,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Typography } from '@mui/material';
+import { Button, Grid, TablePagination } from '@mui/material';
+import { useTitleContext } from '../context/TitleContext';
+import { useEffect, useState } from 'react';
+import { useAlertContext } from '../context/AlertContext';
 
 interface Data {
   entryNumber: string,
@@ -67,141 +70,176 @@ const rows = [
   createData('EN-006-2024', 'OSM-236-2733', 'Volumen', 'Hospital Angeles Roma', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
   createData('EN-007-2024', 'OSM-100-2674', 'Volumen', 'Hospital Elisur Tlalnepantla', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
   createData('EN-008-2024', 'OSM-231-4653', 'Volumen', 'Laboratorios el Chopo', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  // createData('EN-009-2024', 'OSM-283-1231', 'Volumen', 'Laboratorios Medico Polanco', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214'),
-  // createData('EN-010-2024', 'OSM-374-3412', 'Volumen', 'Instituto Mexicano del Seguro Social', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214'),
-  // createData('EN-011-2024', 'OSM-621-5489', 'Volumen', 'Isstituto de Rehabiliticion Pulmonar', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214'),
-  // createData('EN-012-2024', 'OSM-341-5432', 'Volumen', 'Instituto de Enfermedades Respiratorias', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214'),
-  // createData('EN-013-2024', 'OSM-345-6458', 'Volumen', 'Laboratorios Industriales SA de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214'),
+  createData('EN-009-2024', 'OSM-283-1231', 'Volumen', 'Laboratorios Medico Polanco', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-010-2024', 'OSM-374-3412', 'Volumen', 'Instituto Mexicano del Seguro Social', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-011-2024', 'OSM-621-5489', 'Volumen', 'Isstituto de Rehabiliticion Pulmonar', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-012-2024', 'OSM-341-5432', 'Volumen', 'Instituto de Enfermedades Respiratorias', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-013-2024', 'OSM-345-6458', 'Volumen', 'Laboratorios Industriales SA de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-009-2024', 'OSM-283-1231', 'Volumen', 'Laboratorios Medico Polanco', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-010-2024', 'OSM-374-3412', 'Volumen', 'Instituto Mexicano del Seguro Social', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-011-2024', 'OSM-621-5489', 'Volumen', 'Isstituto de Rehabiliticion Pulmonar', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-012-2024', 'OSM-341-5432', 'Volumen', 'Instituto de Enfermedades Respiratorias', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-013-2024', 'OSM-345-6458', 'Volumen', 'Laboratorios Industriales SA de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-009-2024', 'OSM-283-1231', 'Volumen', 'Laboratorios Medico Polanco', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-010-2024', 'OSM-374-3412', 'Volumen', 'Instituto Mexicano del Seguro Social', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-011-2024', 'OSM-621-5489', 'Volumen', 'Isstituto de Rehabiliticion Pulmonar', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-012-2024', 'OSM-341-5432', 'Volumen', 'Instituto de Enfermedades Respiratorias', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-013-2024', 'OSM-345-6458', 'Volumen', 'Laboratorios Industriales SA de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-009-2024', 'OSM-283-1231', 'Volumen', 'Laboratorios Medico Polanco', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-010-2024', 'OSM-374-3412', 'Volumen', 'Instituto Mexicano del Seguro Social', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-011-2024', 'OSM-621-5489', 'Volumen', 'Isstituto de Rehabiliticion Pulmonar', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-012-2024', 'OSM-341-5432', 'Volumen', 'Instituto de Enfermedades Respiratorias', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-013-2024', 'OSM-345-6458', 'Volumen', 'Laboratorios Industriales SA de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-009-2024', 'OSM-283-1231', 'Volumen', 'Laboratorios Medico Polanco', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-010-2024', 'OSM-374-3412', 'Volumen', 'Instituto Mexicano del Seguro Social', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-011-2024', 'OSM-621-5489', 'Volumen', 'Isstituto de Rehabiliticion Pulmonar', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-012-2024', 'OSM-341-5432', 'Volumen', 'Instituto de Enfermedades Respiratorias', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-013-2024', 'OSM-345-6458', 'Volumen', 'Laboratorios Industriales SA de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const headCells = [
+interface Column {
+  id: string;
+  label: string;
+}
+const columns: Column[] = [
   {
     id: 'entryNumber',
-    numeric: false,
-    disablePadding: true,
     label: 'No. Entrada',
   },
   {
     id: 'number',
-    numeric: false,
-    disablePadding: false,
     label: 'Orden de Servicio',
   },
   {
     id: 'magnitude',
-    numeric: false,
-    disablePadding: false,
     label: 'Magnitud',
   },
   {
     id: 'client',
-    numeric: false,
-    disablePadding: false,
     label: 'Empresa',
   },
   {
     id: 'priority',
-    numeric: false,
-    disablePadding: false,
     label: 'Prioridad',
   },
   {
     id: 'worker',
-    numeric: false,
-    disablePadding: false,
     label: 'Metrólogo',
   },
   {
     id: 'createdBy',
-    numeric: false,
-    disablePadding: false,
     label: 'Registró',
   },
   {
     id: 'createdAt',
-    numeric: false,
-    disablePadding: false,
     label: 'Fecha de Recepción',
   },
   {
     id: 'assignmentDate',
-    numeric: false,
-    disablePadding: false,
     label: 'Fecha de Asignación',
   },
   {
     id: 'scheduledDate',
-    numeric: false,
-    disablePadding: false,
     label: 'Fecha Programada',
   },
   {
     id: 'comments',
-    numeric: false,
-    disablePadding: false,
     label: 'Observaciones',
   },
   {
     id: 'budgetNumber',
-    numeric: false,
-    disablePadding: false,
     label: 'No. Cotización',
   },
   {
     id: 'vendor',
-    numeric: false,
-    disablePadding: false,
     label: 'Vendedor',
   },
   {
     id: 'clientType',
-    numeric: false,
-    disablePadding: false,
     label: 'Tipo de Cliente',
   },
 ];
 
+export default function Orders(): JSX.Element {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const { setTitle } = useTitleContext();
+  const { setAlert } = useAlertContext();
+  setTitle('Ordenes de Servicio');
 
-  
-  export default function Orders(): JSX.Element {
-    return (
-      <div>
-      <Typography variant='h5' sx={{pb: 3}}>Ordenes de Servicio</Typography>
-      <TableContainer component={Paper} >
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              {headCells.map((cell, index) => (
-                <TableCell key={index}>{cell.label}</TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row, index) => (
-              <TableRow key={index}>
-                <TableCell align="center">
-                  {row.entryNumber}
-                </TableCell>
-                <TableCell align="center">{row.number}</TableCell>
-                <TableCell align="center">{row.magnitude}</TableCell>
-                <TableCell align="center">{row.client}</TableCell>
-                <TableCell align="center">{row.priority}</TableCell>
-                <TableCell align="center">{row.worker}</TableCell>
-                <TableCell align="center">{row.createdBy}</TableCell>
-                <TableCell align="center">{row.createdAt}</TableCell>
-                <TableCell align="center">{row.assignmentDate}</TableCell>
-                <TableCell align="center">{row.scheduledDate}</TableCell>
-                <TableCell align="center">{row.comments}</TableCell>
-                <TableCell align="center">{row.budgetNumber}</TableCell>
-                <TableCell align="center">{row.vendor}</TableCell>
-                <TableCell align="center">{row.clientType}</TableCell>
+  const [maxHeight, setMaxHeight] = useState<number>(0);
 
-            </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      </div>
-    );
-  }
+  useEffect(() => {
+    const handleResize = () => {
+      const height = window.innerHeight - 200; // Adjust the offset as needed
+      setMaxHeight(height);
+    };
+
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
+  return (
+    <Grid container>
+      <Button variant='contained' onClick={() => setAlert({message: "This is a sucess message", type: 'success', isOpen: true})}>Open Alert</Button>
+      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+        <TableContainer sx={{ maxHeight: maxHeight }}>
+          <Table stickyHeader aria-label="sticky table">
+            <TableHead sx={{backgroundColor: 'red'}}>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableCell
+                    key={column.id}
+                    align='center'
+                    sx={{color: 'white'}}
+                    
+                  >
+                    {column.label}
+                  </TableCell>
+                ))}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row, index) => {
+                  return (
+                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                      {columns.map((column) => {
+                        const value = row[column.id as keyof Data];
+                        return (
+                          <TableCell key={column.id} align='center'>
+                            {value}
+                          </TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[10, 25, 100]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Paper>
+    </Grid>
+  );
+}

@@ -7,15 +7,22 @@ import Frame from './components/frame/Frame.tsx';
 import Assignments from './components/Assignments.tsx';
 import Clients from './components/Clientes.tsx';
 import Tools from './components/Tools.tsx';
+import { TitleContextProvider } from './context/TitleContext.tsx';
 
 export default function Router(): ReactNode {
   const routes: RouteObject[] = [
     {
-      element: <Login />,
+      element: (
+        <Login />
+      ),
       path: '/',      
     },
     {
-      element: <Frame />,
+      element: (
+        <TitleContextProvider>
+          <Frame />
+        </TitleContextProvider>
+      ),
       children: [
         {
           path: '/ordenes',
