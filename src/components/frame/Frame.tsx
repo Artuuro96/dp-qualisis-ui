@@ -3,8 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import Header from './header/Header';
 import Nav from './nav/Nav';
-import { Alert, Snackbar } from '@mui/material';
-import { useAlertContext } from '../../context/AlertContext';
+import SnackbarAlert from '../custom/SnackbarAlert';
 
 const APP_BAR_MOBILE = 54;
 const APP_BAR_DESKTOP = 80;
@@ -32,20 +31,11 @@ const Main = styled('div')(({ theme }) => ({
 
 export default function Frame(): JSX.Element {
   const [open, setOpen] = useState(false);
-  const { alert } = useAlertContext();
   return (
     <StyledRoot>
       <Header onOpenNav={() => setOpen(true)}/>
       <Nav openNav={open} onCloseNav={() => setOpen(false)}/>
-      <Snackbar sx={{minWidth: 500}} open={alert.isOpen} autoHideDuration={6000} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-        <Alert
-          severity={alert.type}
-          variant="filled"
-          sx={{ width: '100%' }}
-        >
-          {alert.message}
-        </Alert>
-      </Snackbar>
+      <SnackbarAlert />
       <Main>
         <Outlet />
       </Main>
