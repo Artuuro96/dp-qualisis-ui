@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
-import Header from './header/Header';
-import Nav from './nav/Nav';
+import Header from './Header';
+import Nav from './Nav';
 import SnackbarAlert from '../custom/SnackbarAlert';
 
 const APP_BAR_MOBILE = 54;

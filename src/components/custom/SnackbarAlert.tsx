@@ -5,7 +5,7 @@ export default function SnackbarAlert(): JSX.Element {
   const { alert, setAlert } = useAlertContext();
   return (
     <Snackbar 
-      sx={{minWidth: 500}} 
+      sx={{minWidth: 400}} 
       open={alert.isOpen} 
       autoHideDuration={4000} 
       anchorOrigin={{ vertical: 'top', horizontal: 'center' }}

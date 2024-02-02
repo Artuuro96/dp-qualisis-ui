@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import { Box, Link, Drawer, Typography } from '@mui/material';
-import useResponsive from '../../../hooks/useResponsive';
-import Scrollbar from '../../custom/scrollbar/Scrollbar';
-import NavSection from '../../custom/nav-section/NavSection';
-import LogoPng from '../../../../public/assets/icons/logo.png';
-import { NavProps } from '../../../interfaces';
+import useResponsive from '../../hooks/useResponsive';
+import Scrollbar from '../custom/scrollbar/Scrollbar';
+import NavSection from '../custom/nav-section/NavSection';
+import LogoPng from '../../../public/assets/icons/logo.png';
+import { NavProps } from '../../interfaces';
 
 const NAV_WIDTH = 250;
 

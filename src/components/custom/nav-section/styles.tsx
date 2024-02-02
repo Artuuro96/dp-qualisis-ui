@@ -18,4 +18,9 @@ export const StyledNavItemIcon = styled(ListItemIcon)({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  '&.active': {
+    color: 'red',
+    bgcolor: 'red',
+    fontWeight: 'fontWeightBold',
+  },
 });

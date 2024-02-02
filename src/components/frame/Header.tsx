@@ -2,7 +2,7 @@ import { styled } from '@mui/material/styles';
 import { Box, Stack, AppBar, Toolbar, IconButton, Typography } from '@mui/material';
 import AccountPopover from './AccountPopover';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useTitleContext } from '../../../context/TitleContext';
+import { useTitleContext } from '../../context/TitleContext';
 
 
 

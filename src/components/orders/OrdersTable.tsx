@@ -7,7 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, Grid } from '@mui/material';
+import { Button, Grid, styled } from '@mui/material';
 
 interface Column {
   id: 'name' | 'code' | 'population' | 'size' | 'density';
@@ -80,6 +80,14 @@ const rows = [
 ];
 
 export default function OrdersTable() {
+  const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  }));
+  
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -94,7 +102,7 @@ export default function OrdersTable() {
 
   return (
     <Grid container>
-      <Button variant='contained'>Open Alert</Button>
+      
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
         <TableContainer sx={{ maxHeight: 440 }}>
           <Table stickyHeader aria-label="sticky table">

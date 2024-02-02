@@ -1,14 +1,32 @@
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import { Button, Grid, TablePagination } from '@mui/material';
+import { 
+  Button,
+  Grid, 
+  TablePagination, 
+  TextField, 
+  styled,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Divider,
+  InputBase,
+  InputAdornment,
+  Input,
+  InputLabel,
+  FormControl,
+  OutlinedInput,
+  Box,
+} from '@mui/material';
 import { useTitleContext } from '../context/TitleContext';
 import { useEffect, useState } from 'react';
 import { useAlertContext } from '../context/AlertContext';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import GetAppIcon from '@mui/icons-material/GetApp';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 
 interface Data {
   entryNumber: string,
@@ -160,12 +178,22 @@ const columns: Column[] = [
   },
 ];
 
+const fIcon = (name: string) => (
+  <SvgColor src={`assets/icons/${name}.svg`} sx={{ width: 1, height: 1 }} />
+);
+
 export default function Orders(): JSX.Element {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const { setTitle } = useTitleContext();
-  const { setAlert } = useAlertContext();
   setTitle('Ordenes de Servicio');
+  const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+    ...theme.typography.body2,
+    padding: theme.spacing(1),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  }));
 
   const [maxHeight, setMaxHeight] = useState<number>(0);
 
@@ -192,10 +220,36 @@ export default function Orders(): JSX.Element {
 
   return (
     <Grid container>
-      <Button variant='contained' onClick={() => setAlert({message: "This is a sucess message", type: 'success', isOpen: true})}>Open Alert</Button>
+      <Grid container spacing={2}>
+        <Grid item xs={4}>
+          <Box display="flex" alignItems="center" gap={1}>
+            <TextField label="# Orden" variant="outlined" size='small' fullWidth/>
+            <Button variant="contained" size='medium'>Buscar</Button>
+          </Box>
+        </Grid>
+        <Grid item xs={8}>
+          <Box display="flex" alignItems="center" justifyContent='flex-end' gap={1}>
+          <Button 
+            variant="contained" 
+            size='medium' 
+            color='info' 
+            sx={{color: 'white'}}
+            endIcon={<GetAppIcon/>}
+          >
+            Importar
+          </Button>
+          <Button variant="contained" size='medium' endIcon={<FileUploadIcon/>}>
+            Exportar
+          </Button>
+          <IconButton aria-label="delete" size="large">
+            <FilterListIcon fontSize="inherit" />
+          </IconButton>
+          </Box>
+        </Grid>
+      </Grid>
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>
         <TableContainer sx={{ maxHeight: maxHeight }}>
-          <Table stickyHeader aria-label="sticky table">
+          <Table stickyHeader aria-label='sticky table'>
             <TableHead sx={{backgroundColor: 'red'}}>
               <TableRow>
                 {columns.map((column) => (
@@ -215,7 +269,7 @@ export default function Orders(): JSX.Element {
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                    <TableRow hover role='checkbox' tabIndex={-1} key={index}>
                       {columns.map((column) => {
                         const value = row[column.id as keyof Data];
                         return (
@@ -232,7 +286,7 @@ export default function Orders(): JSX.Element {
         </TableContainer>
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
-          component="div"
+          component='div'
           count={rows.length}
           rowsPerPage={rowsPerPage}
           page={page}

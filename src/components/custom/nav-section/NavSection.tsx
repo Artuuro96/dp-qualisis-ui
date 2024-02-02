@@ -1,4 +1,4 @@
-import { NavLink as RouterLink } from 'react-router-dom';
+import { NavLink as RouterLink, useLocation } from 'react-router-dom';
 import { Box, List, ListItemText } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { StyledNavItem, StyledNavItemIcon } from './styles';
@@ -30,9 +30,12 @@ const items = [{
   icon: 'tool'
 }];
 
-const fIcon = (name: string) => <SvgColor src={`assets/icons/${name}.svg`} sx={{ width: 1, height: 1 }} />;
+const fIcon = (name: string) => (
+  <SvgColor src={`assets/icons/${name}.svg`} sx={{ width: 1, height: 1 }} />
+);
 
 export default function NavSection(): JSX.Element {
+  const { pathname } = useLocation();
   return (
     <Box>
       <List disablePadding sx={{ p: 1 }}>
@@ -45,11 +48,15 @@ export default function NavSection(): JSX.Element {
                 color: 'white',
                 bgcolor: 'white',
                 fontWeight: 'fontWeightBold',
-                backgroundColor: alpha('#919EAB', 0.70),
+                backgroundColor: alpha('#919EAB', 0.15),
               },
             }}
           >
-          <StyledNavItemIcon>{fIcon(item.icon)}</StyledNavItemIcon>
+            <StyledNavItemIcon sx={{
+              color: pathname.split('/')[1] === item.path ? 'primary.main' : 'white',
+            }}>
+              {fIcon(item.icon)} 
+            </StyledNavItemIcon>
     
           <ListItemText sx={{ color: 'white' }} disableTypography primary={item.title} />
         </StyledNavItem>
