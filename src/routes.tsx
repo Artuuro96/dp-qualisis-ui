@@ -8,14 +8,17 @@ import Assignments from './components/Assignments.tsx';
 import Clients from './components/Clientes.tsx';
 import Tools from './components/Tools.tsx';
 import { TitleContextProvider } from './context/TitleContext.tsx';
+import LoginRole from './components/LoginRole.tsx';
 
 export default function Router(): ReactNode {
   const routes: RouteObject[] = [
     {
-      element: (
-        <Login />
-      ),
-      path: '/',      
+      element: <Login />,
+      path: '/',   
+    },
+    {
+      element: <LoginRole />,
+      path: '/loginAs',   
     },
     {
       element: (

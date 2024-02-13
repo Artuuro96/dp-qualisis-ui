@@ -22,7 +22,7 @@ export default function Login(): JSX.Element {
       email: data.get('email'),
       password: data.get('password'),
     });
-    navigate('/ordenes');
+    navigate('/loginAs');
   };
 
   return (

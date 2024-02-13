@@ -3,7 +3,6 @@ import {
   Grid, 
   TablePagination, 
   TextField, 
-  styled,
   Table,
   TableBody,
   TableCell,
@@ -11,19 +10,10 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton,
-  Divider,
-  InputBase,
-  InputAdornment,
-  Input,
-  InputLabel,
-  FormControl,
-  OutlinedInput,
   Box,
 } from '@mui/material';
 import { useTitleContext } from '../context/TitleContext';
 import { useEffect, useState } from 'react';
-import { useAlertContext } from '../context/AlertContext';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
@@ -178,22 +168,11 @@ const columns: Column[] = [
   },
 ];
 
-const fIcon = (name: string) => (
-  <SvgColor src={`assets/icons/${name}.svg`} sx={{ width: 1, height: 1 }} />
-);
-
 export default function Orders(): JSX.Element {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const { setTitle } = useTitleContext();
   setTitle('Ordenes de Servicio');
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  }));
 
   const [maxHeight, setMaxHeight] = useState<number>(0);
 
@@ -219,38 +198,42 @@ export default function Orders(): JSX.Element {
   };
 
   return (
-    <Grid container>
+    <Grid>
       <Grid container spacing={2}>
-        <Grid item xs={4}>
-          <Box display="flex" alignItems="center" gap={1}>
-            <TextField label="# Orden" variant="outlined" size='small' fullWidth/>
-            <Button variant="contained" size='medium'>Buscar</Button>
+        <Grid item xs={3}>
+          <Box display="flex" alignItems="center">
+            <TextField id="outlined-basic" label="No. Orden / Entrada" variant="outlined" size='small' fullWidth/>
           </Box>
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={3}>
+          <Box display="flex" alignItems='flex-start'>
+            <Button variant='contained'>Buscar</Button>
+          </Box>
+        </Grid>
+        <Grid item xs={6}>
           <Box display="flex" alignItems="center" justifyContent='flex-end' gap={1}>
-          <Button 
-            variant="contained" 
-            size='medium' 
-            color='info' 
-            sx={{color: 'white'}}
-            endIcon={<GetAppIcon/>}
-          >
-            Importar
-          </Button>
-          <Button variant="contained" size='medium' endIcon={<FileUploadIcon/>}>
-            Exportar
-          </Button>
-          <IconButton aria-label="delete" size="large">
-            <FilterListIcon fontSize="inherit" />
-          </IconButton>
+            <Button 
+              variant="contained" 
+              size='medium' 
+              color='info' 
+              sx={{color: 'white', borderRadius: 0}}
+              endIcon={<GetAppIcon/>}
+            >
+              Importar
+            </Button>
+            <Button variant="outlined" size='medium' startIcon={<FileUploadIcon/>}>
+              Exportar
+            </Button>
+            <Button variant="outlined" size='medium' startIcon={<FilterListIcon/>}>
+              Filtros
+            </Button>
           </Box>
         </Grid>
       </Grid>
-      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+      <Paper sx={{ width: '100%', overflow: 'hidden', mt: 1 }}>
         <TableContainer sx={{ maxHeight: maxHeight }}>
           <Table stickyHeader aria-label='sticky table'>
-            <TableHead sx={{backgroundColor: 'red'}}>
+            <TableHead sx={{color: 'red'}}>
               <TableRow>
                 {columns.map((column) => (
                   <TableCell
