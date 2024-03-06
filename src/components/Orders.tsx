@@ -11,12 +11,18 @@ import {
   TableRow,
   Paper,
   Box,
+  IconButton,
+  Chip,
+  Link,
 } from '@mui/material';
 import { useTitleContext } from '../context/TitleContext';
 import { useEffect, useState } from 'react';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 
 interface Data {
   entryNumber: string,
@@ -32,6 +38,7 @@ interface Data {
   comments: string,
   budgetNumber: string,
   vendor: string,
+  status: string,
   clientType: string,
 }
 
@@ -49,6 +56,7 @@ function createData(
   comments: string,
   budgetNumber: string,
   vendor: string,
+  status: string,
   clientType: string,
 ): Data {
   return {
@@ -65,44 +73,21 @@ function createData(
     comments,
     budgetNumber,
     vendor,
+    status,
     clientType,
   }
 }
 
 const rows = [
-  createData('EN-001-2024', 'OSM-001-1231', 'Volumen', 'Coca Cola SA de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-002-2024', 'OSM-783-7731', 'Volumen', 'Coorporativo Mahindra SRL de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-003-2024', 'OSM-283-2315', 'Volumen', 'Google SA de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-004-2024', 'OSM-090-9826', 'Volumen', 'Deblan LAB SA de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-005-2024', 'OSM-025-8362', 'Volumen', 'Jonastructores LAB SRL de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-006-2024', 'OSM-236-2733', 'Volumen', 'Hospital Angeles Roma', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-007-2024', 'OSM-100-2674', 'Volumen', 'Hospital Elisur Tlalnepantla', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-008-2024', 'OSM-231-4653', 'Volumen', 'Laboratorios el Chopo', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-009-2024', 'OSM-283-1231', 'Volumen', 'Laboratorios Medico Polanco', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-010-2024', 'OSM-374-3412', 'Volumen', 'Instituto Mexicano del Seguro Social', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-011-2024', 'OSM-621-5489', 'Volumen', 'Isstituto de Rehabiliticion Pulmonar', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-012-2024', 'OSM-341-5432', 'Volumen', 'Instituto de Enfermedades Respiratorias', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-013-2024', 'OSM-345-6458', 'Volumen', 'Laboratorios Industriales SA de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-009-2024', 'OSM-283-1231', 'Volumen', 'Laboratorios Medico Polanco', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-010-2024', 'OSM-374-3412', 'Volumen', 'Instituto Mexicano del Seguro Social', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-011-2024', 'OSM-621-5489', 'Volumen', 'Isstituto de Rehabiliticion Pulmonar', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-012-2024', 'OSM-341-5432', 'Volumen', 'Instituto de Enfermedades Respiratorias', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-013-2024', 'OSM-345-6458', 'Volumen', 'Laboratorios Industriales SA de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-009-2024', 'OSM-283-1231', 'Volumen', 'Laboratorios Medico Polanco', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-010-2024', 'OSM-374-3412', 'Volumen', 'Instituto Mexicano del Seguro Social', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-011-2024', 'OSM-621-5489', 'Volumen', 'Isstituto de Rehabiliticion Pulmonar', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-012-2024', 'OSM-341-5432', 'Volumen', 'Instituto de Enfermedades Respiratorias', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-013-2024', 'OSM-345-6458', 'Volumen', 'Laboratorios Industriales SA de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-009-2024', 'OSM-283-1231', 'Volumen', 'Laboratorios Medico Polanco', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-010-2024', 'OSM-374-3412', 'Volumen', 'Instituto Mexicano del Seguro Social', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-011-2024', 'OSM-621-5489', 'Volumen', 'Isstituto de Rehabiliticion Pulmonar', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-012-2024', 'OSM-341-5432', 'Volumen', 'Instituto de Enfermedades Respiratorias', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-013-2024', 'OSM-345-6458', 'Volumen', 'Laboratorios Industriales SA de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-009-2024', 'OSM-283-1231', 'Volumen', 'Laboratorios Medico Polanco', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-010-2024', 'OSM-374-3412', 'Volumen', 'Instituto Mexicano del Seguro Social', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-011-2024', 'OSM-621-5489', 'Volumen', 'Isstituto de Rehabiliticion Pulmonar', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-012-2024', 'OSM-341-5432', 'Volumen', 'Instituto de Enfermedades Respiratorias', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
-  createData('EN-013-2024', 'OSM-345-6458', 'Volumen', 'Laboratorios Industriales SA de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'externo'),
+  createData('EN-001-2024', 'OSM-001-1231', 'Volumen', 'Coca Cola SA de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'asignada', 'externo'),
+  createData('EN-002-2024', 'OSM-783-7731', 'Volumen', 'Coorporativo Mahindra SRL de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'asignada', 'externo'),
+  createData('EN-003-2024', 'OSM-283-2315', 'Volumen', 'Google SA de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'asignada', 'externo'),
+  createData('EN-004-2024', 'OSM-090-9826', 'Volumen', 'Deblan LAB SA de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'asignada', 'externo'),
+  createData('EN-005-2024', 'OSM-025-8362', 'Volumen', 'Jonastructores LAB SRL de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'asignada', 'externo'),
+  createData('EN-006-2024', 'OSM-236-2733', 'Volumen', 'Hospital Angeles Roma', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'asignada', 'externo'),
+  createData('EN-007-2024', 'OSM-100-2674', 'Volumen', 'Hospital Elisur Tlalnepantla', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'asignada', 'externo'),
+  createData('EN-008-2024', 'OSM-231-4653', 'Volumen', 'Laboratorios el Chopo', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'asignada', 'externo'),
+  createData('EN-009-2024', 'OSM-283-1231', 'Volumen', 'Laboratorios Medico Polanco', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'asignada', 'externo'),
 ];
 
 interface Column {
@@ -118,7 +103,7 @@ const columns: Column[] = [
     id: 'number',
     label: 'Orden de Servicio',
   },
-  {
+  /*{
     id: 'magnitude',
     label: 'Magnitud',
   },
@@ -133,15 +118,15 @@ const columns: Column[] = [
   {
     id: 'worker',
     label: 'Metrólogo',
-  },
+  },*/
   {
     id: 'createdBy',
     label: 'Registró',
   },
-  {
+  /*{
     id: 'createdAt',
     label: 'Fecha de Recepción',
-  },
+  },*/
   {
     id: 'assignmentDate',
     label: 'Fecha de Asignación',
@@ -150,33 +135,42 @@ const columns: Column[] = [
     id: 'scheduledDate',
     label: 'Fecha Programada',
   },
-  {
+  /*{
     id: 'comments',
     label: 'Observaciones',
   },
   {
     id: 'budgetNumber',
     label: 'No. Cotización',
-  },
+  },*/
   {
     id: 'vendor',
     label: 'Vendedor',
   },
-  {
+  /*{
     id: 'clientType',
     label: 'Tipo de Cliente',
+  },*/
+  {
+    id: 'status',
+    label: 'Estatus'
   },
+  {
+    id: 'actions',
+    label: 'Acciones'
+  }
 ];
 
 export default function Orders(): JSX.Element {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const { setTitle } = useTitleContext();
-  setTitle('Ordenes de Servicio');
+  
 
   const [maxHeight, setMaxHeight] = useState<number>(0);
 
   useEffect(() => {
+    setTitle('Ordenes de Servicio');
     const handleResize = () => {
       const height = window.innerHeight - 200; // Adjust the offset as needed
       setMaxHeight(height);
@@ -186,7 +180,7 @@ export default function Orders(): JSX.Element {
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [setTitle]);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage);
@@ -196,6 +190,38 @@ export default function Orders(): JSX.Element {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
+  
+  const getTableCellValue = (value: string, column: Column) => {
+    switch(column.id) {
+      case 'actions':
+        return (
+          <>
+            <IconButton aria-label="edit">
+              <EditIcon />
+            </IconButton>
+            <IconButton aria-label="delete">
+              <DeleteIcon />
+            </IconButton>
+          </>
+        );
+      
+      case 'status':
+        return (
+          <> <Chip color='primary' label={value} /> </>
+        );
+
+      case 'entryNumber':
+        return (
+          <Link href="#" underline="none">
+            {value}
+          </Link>
+        )
+        
+      default: 
+        return (<>{value}</>);
+    }
+    
+  }
 
   return (
     <Grid>
@@ -217,7 +243,7 @@ export default function Orders(): JSX.Element {
               size='medium' 
               color='info' 
               sx={{color: 'white', borderRadius: 0}}
-              endIcon={<GetAppIcon/>}
+              startIcon={<GetAppIcon/>}
             >
               Importar
             </Button>
@@ -226,6 +252,9 @@ export default function Orders(): JSX.Element {
             </Button>
             <Button variant="outlined" size='medium' startIcon={<FilterListIcon/>}>
               Filtros
+            </Button>
+            <Button variant="outlined" size='medium' startIcon={<AddBoxIcon/>}>
+              Nueva Orden
             </Button>
           </Box>
         </Grid>
@@ -257,7 +286,7 @@ export default function Orders(): JSX.Element {
                         const value = row[column.id as keyof Data];
                         return (
                           <TableCell key={column.id} align='center'>
-                            {value}
+                            {getTableCellValue(value, column)}
                           </TableCell>
                         );
                       })}

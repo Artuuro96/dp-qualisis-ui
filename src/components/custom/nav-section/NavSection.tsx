@@ -43,6 +43,7 @@ export default function NavSection(): JSX.Element {
           <StyledNavItem
             component={RouterLink}
             to={item.path}
+            key={item.path}
             sx={{
               '&.active': {
                 color: 'white',
