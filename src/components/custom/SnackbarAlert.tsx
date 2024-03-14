@@ -8,7 +8,7 @@ export default function SnackbarAlert(): JSX.Element {
       sx={{minWidth: 400}} 
       open={alert.isOpen} 
       autoHideDuration={4000} 
-      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       onClose={() => setAlert({ ...alert, isOpen: false }) }
     >
       <Alert

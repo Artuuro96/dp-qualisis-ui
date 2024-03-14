@@ -5,7 +5,7 @@ import Orders from './components/Orders.tsx';
 import Staff from './components/Staff.tsx';
 import Frame from './components/frame/Frame.tsx';
 import Assignments from './components/Assignments.tsx';
-import Clients from './components/Clientes.tsx';
+import Clients from './components/Clients.tsx';
 import Tools from './components/Tools.tsx';
 import { TitleContextProvider } from './context/TitleContext.tsx';
 import LoginRole from './components/LoginRole.tsx';

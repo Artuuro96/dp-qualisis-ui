@@ -3,7 +3,6 @@ import { Outlet } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import Header from './Header';
 import Nav from './Nav';
-import SnackbarAlert from '../custom/SnackbarAlert';
 
 const APP_BAR_MOBILE = 54;
 const APP_BAR_DESKTOP = 80;
@@ -35,7 +34,6 @@ export default function Frame(): JSX.Element {
     <StyledRoot>
       <Header onOpenNav={() => setOpen(true)}/>
       <Nav openNav={open} onCloseNav={() => setOpen(false)}/>
-      <SnackbarAlert />
       <Main>
         <Outlet />
       </Main>

@@ -1,8 +1,12 @@
 import { Grid, Typography } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+import { Context } from '../types/context.interface';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/reducers/client.reducer';
 
 function stringToColor(string: string) {
   let hash = 0;
@@ -31,29 +35,20 @@ function stringAvatar(name: string) {
   };
 }
 
-const roles = [
-  {
-    id: 'id1',
-    name: 'Developer'
-  },
-  {
-    id: 'id2',
-    name: 'Admin'
-  },
-  {
-    id: 'id3',
-    name: 'Worker'
-  }
-]
-
 export default function LoginRole() {
   const [hoverRole, setHoverRole] = useState<string>('');
+  const [userRoles, setUserRoles] = useState<any>([]);
   const navigate = useNavigate();
+  const { data } = useSelector((state: RootState) => state.auth);
+
+  useEffect(() => {
+    const { roles } = jwtDecode(localStorage.getItem('access_token') || data.accessToken ) as Context;
+    setUserRoles(roles);
+  }, [data])
+  
+ 
   return (
     <>
-      <Grid container direction="column" alignItems="center" mt={15}>
-        <Typography color='white' variant='h4'>Elige un rol para inicar sesión</Typography>
-      </Grid>
       <div
         style={{
           position: 'absolute',
@@ -62,8 +57,9 @@ export default function LoginRole() {
           transform: 'translate(-50%, -50%)',
         }}
       >
-        <Stack direction="row" spacing={5}>
-          {roles.map((role) => (
+        <Typography color='white' variant='h4'>Elige un rol para inicar sesión</Typography>
+        <Stack direction="row" spacing={5} padding={2}>
+          {userRoles.map((role) => (
             <Grid container 
               direction="column" 
               alignItems="center" 

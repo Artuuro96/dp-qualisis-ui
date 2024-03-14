@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useEffect } from 'react';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
@@ -12,18 +12,55 @@ import { Card, CardContent, InputAdornment } from '@mui/material';
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import LockOpenRoundedIcon from '@mui/icons-material/LockOpenRounded';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getToken } from '../store/reducers/auth.reducer';
+import { RootState } from '../store/reducers/client.reducer';
+import { useAlertContext } from '../context/AlertContext';
+import { useLoaderContext } from '../context/LoaderContext';
+import { jwtDecode } from 'jwt-decode';
+import { Context } from '../types/context.interface';
 
 export default function Login(): JSX.Element {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { setAlert } = useAlertContext();
+  const { setShowLoader } = useLoaderContext();
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const { data, loading, error } = useSelector((state: RootState) => state.auth);
+  
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-    navigate('/loginAs');
+    dispatch(getToken(username, password));
   };
+
+  useEffect(() => {
+    if(loading) setShowLoader(true) 
+    if (data.isAuthenticated) {
+      setShowLoader(false);
+      const { roles } = jwtDecode(data.accessToken) as Context;
+      if(roles?.length === 1) {
+        navigate('/ordenes')
+        return;
+      }
+      navigate('/loginAs');
+    } else if(error) {
+      setShowLoader(false);
+      setAlert({
+        type: 'error',
+        message: 'Usuario y/o contraseña incorrectos',
+        isOpen: true,
+      });
+    }
+  }, [
+    data, 
+    error,
+    loading,
+    navigate, 
+    setAlert, 
+    setShowLoader,
+  ]);
 
   return (
     <Container component='main' maxWidth='xs' sx={{padding: 10}}>
@@ -40,13 +77,14 @@ export default function Login(): JSX.Element {
           >
             <img src={Logo} style={{ width: '100%', height: '100%', marginTop: -50, marginBottom: -70 }} />
             <Box component='form' onSubmit={handleSubmit} noValidate>
+              {/* Username Field */}
               <TextField
                 margin='normal'
                 required
                 fullWidth
                 id='email'
                 label='Usuario'
-                name='email'
+                value={username}
                 autoComplete='email'
                 autoFocus
                 InputProps={{
@@ -55,15 +93,18 @@ export default function Login(): JSX.Element {
                       <PermIdentityIcon />
                     </InputAdornment>
                   ),
-                }} />
+                }}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => setUsername(event?.target.value)}
+              />
+              {/* Password Field */}
               <TextField
                 margin='normal'
                 required
                 fullWidth
-                name='password'
                 label='Constraseña'
                 type='password'
                 id='password'
+                value={password}
                 autoComplete='current-password'
                 InputProps={{
                   startAdornment: (
@@ -71,17 +112,22 @@ export default function Login(): JSX.Element {
                       <LockOpenRoundedIcon />
                     </InputAdornment>
                   ),
-                }} />
+                }}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => setPassword(event?.target.value)}
+              />
+              
               <Button
                 type='submit'
                 fullWidth
                 variant='contained'
                 color='primary'
                 sx={{ mt: 6, mb: 2, height: '4em' }}
+                disabled={loading}
               >
-                Iniciar Sesión
+                {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
               </Button>
-              <Grid container >
+              {/* Forgot Password Link */}
+              <Grid container>
                 <Grid item xs textAlign='center'>
                   <Link href='#' variant='body2'>
                     ¿Olvidaste tu contraseña?

@@ -5,6 +5,9 @@ import palette from './pallete';
 import { BrowserRouter } from 'react-router-dom';
 import Router from './routes';
 import { AlertContextProvider } from './context/AlertContext';
+import { LoaderContextProvider } from './context/LoaderContext';
+import SnackbarAlert from './components/custom/SnackbarAlert';
+import Loader from './components/custom/Loader';
 
 const theme = createTheme({
   typography: {
@@ -18,10 +21,14 @@ function App(): JSX.Element {
   return (
     <ThemeProvider theme={theme}>
       <AlertContextProvider>
-        <CssBaseline />
-        <BrowserRouter>
-          <Router />
-        </BrowserRouter>
+        <LoaderContextProvider>
+          <Loader/>
+          <SnackbarAlert />
+          <CssBaseline />
+          <BrowserRouter>
+            <Router />
+          </BrowserRouter>
+        </LoaderContextProvider>
       </AlertContextProvider>
     </ThemeProvider>
   ); 
