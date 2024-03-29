@@ -27,6 +27,7 @@ export const apiMiddleware: Middleware = ({ dispatch }) => (next: any) => async 
     dispatch({ type: onSuccess, payload: response.data });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    dispatch({ type: onError, payload: { message: error.message } });
+    console.log(error)
+    dispatch({ type: onError, payload: { message: error.response.data.message } });
   }
 }

@@ -1,5 +1,8 @@
 export interface InitialState<T> {
   data: T;
   loading?: boolean;
-  error?: null | string;
+  error?: null | Error;
+}
+export interface Error {
+  message: string[] | string;
 }

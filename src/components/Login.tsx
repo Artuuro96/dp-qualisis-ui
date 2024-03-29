@@ -14,12 +14,11 @@ import LockOpenRoundedIcon from '@mui/icons-material/LockOpenRounded';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getToken } from '../store/reducers/auth.reducer';
+import { login } from '../store/reducers/auth.reducer';
 import { RootState } from '../store/reducers/client.reducer';
 import { useAlertContext } from '../context/AlertContext';
 import { useLoaderContext } from '../context/LoaderContext';
-import { jwtDecode } from 'jwt-decode';
-import { Context } from '../types/context.interface';
+import { getUserContext } from '../utils/get-context.util';
 
 export default function Login(): JSX.Element {
   const dispatch = useDispatch();
@@ -32,21 +31,29 @@ export default function Login(): JSX.Element {
   
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    dispatch(getToken(username, password));
+    dispatch(login(username, password));
   };
 
   useEffect(() => {
     if(loading) setShowLoader(true) 
     if (data.isAuthenticated) {
       setShowLoader(false);
-      const { roles } = jwtDecode(data.accessToken) as Context;
-      if(roles?.length === 1) {
-        navigate('/ordenes')
+      const userContext = getUserContext();
+      if(!userContext) {
+        navigate('/');
         return;
       }
-      navigate('/loginAs');
+
+      console.log(userContext.roles.length === 1)
+      if(userContext?.roles?.length < 2) {
+        navigate('/ordenes')
+        return;
+      } else {
+        navigate('/loginAs');
+        return;
+      }
     } else if(error) {
-      setShowLoader(false);
+      setShowLoader(false); 
       setAlert({
         type: 'error',
         message: 'Usuario y/o contraseña incorrectos',

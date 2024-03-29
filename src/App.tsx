@@ -20,16 +20,18 @@ const theme = createTheme({
 function App(): JSX.Element {
   return (
     <ThemeProvider theme={theme}>
+      <LoaderContextProvider>
       <AlertContextProvider>
-        <LoaderContextProvider>
-          <Loader/>
+        
           <SnackbarAlert />
+          <Loader/>
           <CssBaseline />
           <BrowserRouter>
             <Router />
           </BrowserRouter>
-        </LoaderContextProvider>
+        
       </AlertContextProvider>
+      </LoaderContextProvider>
     </ThemeProvider>
   ); 
 }

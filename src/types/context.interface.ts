@@ -1,3 +1,5 @@
+import { Role } from "./role.interface";
+
 export interface Context {
   userId?: string;
   username?: string;
@@ -5,7 +7,7 @@ export interface Context {
   lastName?: string;
   secondLastName?: string;
   email?: string;
-  roles?: string[];
+  roles: Role[];
   modules?: string[];
   iat?: number;
   exp?: number;

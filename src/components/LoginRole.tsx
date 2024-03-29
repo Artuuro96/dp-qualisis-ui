@@ -3,10 +3,13 @@ import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
-import { Context } from '../types/context.interface';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store/reducers/client.reducer';
+import { Role } from '../types/role.interface';
+import { getErrorMessage, getUserContext } from '../utils/get-context.util';
+import { useDispatch } from 'react-redux';
+import { loginAs } from '../store/reducers/auth.reducer';
+import { useAlertContext } from '../context/AlertContext';
 
 function stringToColor(string: string) {
   let hash = 0;
@@ -36,16 +39,34 @@ function stringAvatar(name: string) {
 }
 
 export default function LoginRole() {
+  
   const [hoverRole, setHoverRole] = useState<string>('');
-  const [userRoles, setUserRoles] = useState<any>([]);
+  const [userRoles, setUserRoles] = useState<Role[]>([]);
+  const { error, data } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
-  const { data } = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch();
+  const { setAlert } = useAlertContext();
 
   useEffect(() => {
-    const { roles } = jwtDecode(localStorage.getItem('access_token') || data.accessToken ) as Context;
-    setUserRoles(roles);
-  }, [data])
-  
+    const userContext = getUserContext();
+    if(userContext)
+      setUserRoles(userContext.roles);
+    if(error) {
+      console.log(error)
+      setAlert({
+        type: 'error',
+        message: getErrorMessage(error),
+        isOpen: true,
+      });
+    }
+    if(data.isAuthWithRole) {
+      navigate('/ordenes');
+    } 
+  }, [error, navigate, setAlert, data])
+
+  const loginWithRole = (role: Role) => {
+    dispatch(loginAs(role));
+  }
  
   return (
     <>
@@ -65,7 +86,7 @@ export default function LoginRole() {
               alignItems="center" 
               onMouseEnter={() => {setHoverRole(role.id)}} 
               onMouseLeave={() => setHoverRole('')}
-              onClick={() => navigate('/ordenes')}
+              onClick={() => loginWithRole(role)}
               key={role.id}
             >
               <Grid item>

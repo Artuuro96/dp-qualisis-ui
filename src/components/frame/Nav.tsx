@@ -6,6 +6,9 @@ import Scrollbar from '../custom/scrollbar/Scrollbar';
 import NavSection from '../custom/nav-section/NavSection';
 import LogoPng from '../../../public/assets/icons/logo.png';
 import { NavProps } from '../../interfaces';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/reducers/client.reducer';
+import { getUserContext } from '../../utils/get-context.util';
 
 const NAV_WIDTH = 250;
 
@@ -19,12 +22,14 @@ const StyledAccount = styled('div')(({ theme }) => ({
 
 export default function Nav({ openNav, onCloseNav }: NavProps) {
   const isDesktop = useResponsive('up', 'lg');
+  const user = getUserContext();
+  const { data } = useSelector((state: RootState) => state.auth)
 
   useEffect(() => {
     if (openNav) {
       onCloseNav();
     }
-  }, []);
+  }, [onCloseNav, openNav]);
 
   const renderContent = (
     <Scrollbar
@@ -41,11 +46,11 @@ export default function Nav({ openNav, onCloseNav }: NavProps) {
           <StyledAccount>
             <Box sx={{ ml: 2 }}>
               <Typography variant="body1" sx={{ color: 'white', fontWeight: 'fontWeightBold'  }}>
-                Josué Ramírez
+                {data.context?.name || user?.name}
               </Typography>
 
               <Typography variant="body2" sx={{ color: 'white' }}>
-                Metrólogo
+                {data.context?.lastName || user?.lastName}
               </Typography>
             </Box>
           </StyledAccount>
