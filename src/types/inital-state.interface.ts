@@ -5,4 +5,5 @@ export interface InitialState<T> {
 }
 export interface Error {
   message: string[] | string;
+  code: number;
 }

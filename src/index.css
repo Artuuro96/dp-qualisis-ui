@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Signika';
-  src: url('./assets/fonts/Signika-Variablewght.ttf') format('truetype');
+  src: url('/assets/fonts/Signika-Variablewght.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }

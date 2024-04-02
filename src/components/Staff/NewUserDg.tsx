@@ -41,7 +41,6 @@ export function NewUserDg({
   const { data: modules } = useSelector((state: RootState) => state.modules);
 
   const onSaveUser = async() => {
-    console.log("==========>", newUser)
     dispatch(createUser(newUser));
     setShowNewUserDg(false);
   }
@@ -103,7 +102,6 @@ export function NewUserDg({
               label="Nombre" 
               value={newUser?.name}
               variant="outlined" 
-              size="small"
               onChange={(event: ChangeEvent<HTMLInputElement>) => setNewUser({
                 ...newUser,
                 name: event.target.value
@@ -117,7 +115,6 @@ export function NewUserDg({
               label="Apellido Paterno" 
               value={newUser?.lastName}
               variant="outlined" 
-              size="small"
               onChange={(event: ChangeEvent<HTMLInputElement>) => setNewUser({
                 ...newUser,
                 lastName: event.target.value,
@@ -131,7 +128,6 @@ export function NewUserDg({
               label="Apellido Materno" 
               value={newUser?.secondLastName || ''}
               variant="outlined" 
-              size="small"
               onChange={(event: ChangeEvent<HTMLInputElement>) => setNewUser({
                 ...newUser,
                 secondLastName: event.target.value,
@@ -145,7 +141,6 @@ export function NewUserDg({
               label="Nombre de Usuario" 
               value={newUser?.username} 
               variant="outlined" 
-              size="small"
               onChange={(event: ChangeEvent<HTMLInputElement>) => setNewUser({
                 ...newUser,
                 username: event.target.value,
@@ -159,7 +154,6 @@ export function NewUserDg({
               label="Email"
               value={newUser?.email}
               variant="outlined" 
-              size="small"
               onChange={(event: ChangeEvent<HTMLInputElement>) => setNewUser({
                 ...newUser,
                 email: event.target.value,
@@ -174,7 +168,6 @@ export function NewUserDg({
               value={newUser?.password}
               variant="outlined" 
               type="password"
-              size="small"
               onChange={(event: ChangeEvent<HTMLInputElement>) => setNewUser({
                 ...newUser,
                 password: event.target.value
@@ -183,7 +176,7 @@ export function NewUserDg({
             />
           </Grid>
           <Grid item xs={4}>
-            <FormControl sx={{width: '100%' }} size="small">
+            <FormControl sx={{width: '100%' }}>
               <InputLabel id="demo-multiple-checkbox-label">Roles</InputLabel>
               <Select
                 labelId="demo-multiple-checkbox-label"
@@ -205,7 +198,7 @@ export function NewUserDg({
             </FormControl>
           </Grid>
           <Grid item xs={4}>
-            <FormControl sx={{width: '100%' }} size="small">
+            <FormControl sx={{width: '100%' }}>
               <InputLabel id="demo-multiple-checkbox-label">Modulos</InputLabel>
               <Select
                 labelId="demo-multiple-checkbox-label"

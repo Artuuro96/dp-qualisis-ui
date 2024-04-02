@@ -15,26 +15,26 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     fetchAllUsers: (state: InitialState<User[]>, action: PayloadAction<User[]>) => {
+      state.error = null;
       state.data = action.payload;
       state.loading = false;
-      state.error = null;
     },
     postUser: (state: InitialState<User[]>, action: PayloadAction<User>) => {
+      state.error = null;
       state.data.push(action.payload);
       state.loading = false;
-      state.error = null;
     },
     removeUser: (state: InitialState<User[]>, action: PayloadAction<{id: string}>) => {
+      state.error = null;
       const filteredUsers = state.data.filter(user => user.id !== action.payload.id);
       state.data = filteredUsers;
       state.loading = false;
-      state.error = null;
     },
     editUser: (state: InitialState<User[]>, action: PayloadAction<User>) => {
+      state.error = null;
       const index = state.data.findIndex(user => user.id === action.payload.id);
       state.data[index] = action.payload;
       state.loading = false;
-      state.error = null;
     },
     apiRequested: (state: InitialState<User[]>) => {
       state.loading = true;

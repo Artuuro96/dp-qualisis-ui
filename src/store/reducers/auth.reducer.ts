@@ -26,6 +26,7 @@ export const authSlice = createSlice({
       state.data.isAuthWithRole = false
       setCredentials(action.payload);
       state.data.context = getUserContext();
+      state.error = null;
     },
     loginUserAs: (state: InitialState<Auth>, action: PayloadAction<Auth>) => {
       state.loading = false;
@@ -34,12 +35,14 @@ export const authSlice = createSlice({
       state.data.isAuthWithRole = true;
       setCredentials(action.payload);
       state.data.context = getUserContext();
+      state.error = null;
     },
     logout: (state: InitialState<Auth>) => {
       state.loading = false;
       state.data = {} as Auth;
       state.data.isAuthenticated = false;
       state.data.isAuthWithRole = false;
+      state.error = null;
     },
     apiRequested: (state: InitialState<Auth>) => {
       state.loading = true;

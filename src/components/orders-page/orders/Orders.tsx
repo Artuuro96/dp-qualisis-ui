@@ -15,80 +15,22 @@ import {
   Chip,
   Link,
 } from '@mui/material';
-import { useTitleContext } from '../context/TitleContext';
-import { useEffect, useState } from 'react';
+import { useTitleContext } from '../../../context/TitleContext';
+import { ChangeEvent, useEffect, useState } from 'react';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../../store/reducers/client.reducer';
+import { getOrders } from '../../../store/reducers/order.reducer';
+import { Order } from '../../../types/order.interface';
+import { formatFullMXDate } from '../../../utils/date.util';
+import { NewOrderDg } from './NewOrderDg';
 
-interface Data {
-  entryNumber: string,
-  number: string,
-  magnitude: string,
-  client: string,
-  priority: string,
-  worker: string,
-  createdBy: string,
-  createdAt: string,
-  assignmentDate: string,
-  scheduledDate: string,
-  comments: string,
-  budgetNumber: string,
-  vendor: string,
-  status: string,
-  clientType: string,
-}
-
-function createData(
-  entryNumber: string,
-  number: string,
-  magnitude: string,
-  client: string,
-  priority: string,
-  worker: string,
-  createdBy: string,
-  createdAt: string,
-  assignmentDate: string,
-  scheduledDate: string,
-  comments: string,
-  budgetNumber: string,
-  vendor: string,
-  status: string,
-  clientType: string,
-): Data {
-  return {
-    entryNumber,
-    number,
-    magnitude,
-    client,
-    priority,
-    worker,
-    createdBy,
-    createdAt,
-    assignmentDate,
-    scheduledDate,
-    comments,
-    budgetNumber,
-    vendor,
-    status,
-    clientType,
-  }
-}
-
-const rows = [
-  createData('EN-001-2024', 'OSM-001-1231', 'Volumen', 'Coca Cola SA de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'asignada', 'externo'),
-  createData('EN-002-2024', 'OSM-783-7731', 'Volumen', 'Coorporativo Mahindra SRL de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'asignada', 'externo'),
-  createData('EN-003-2024', 'OSM-283-2315', 'Volumen', 'Google SA de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'asignada', 'externo'),
-  createData('EN-004-2024', 'OSM-090-9826', 'Volumen', 'Deblan LAB SA de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'asignada', 'externo'),
-  createData('EN-005-2024', 'OSM-025-8362', 'Volumen', 'Jonastructores LAB SRL de CV', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'asignada', 'externo'),
-  createData('EN-006-2024', 'OSM-236-2733', 'Volumen', 'Hospital Angeles Roma', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'asignada', 'externo'),
-  createData('EN-007-2024', 'OSM-100-2674', 'Volumen', 'Hospital Elisur Tlalnepantla', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'asignada', 'externo'),
-  createData('EN-008-2024', 'OSM-231-4653', 'Volumen', 'Laboratorios el Chopo', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'asignada', 'externo'),
-  createData('EN-009-2024', 'OSM-283-1231', 'Volumen', 'Laboratorios Medico Polanco', 'Normal', 'Juan Jose Chavez', 'Alicia Cervantes', '28/12/2023', '03/09/22', '17/05/2025', 'Se recibe el equipo en buen estado', '3214', 'Javier Hernandez Balcazar', 'asignada', 'externo'),
-];
 
 interface Column {
   id: string;
@@ -100,7 +42,7 @@ const columns: Column[] = [
     label: 'No. Entrada',
   },
   {
-    id: 'number',
+    id: 'name',
     label: 'Orden de Servicio',
   },
   /*{
@@ -123,16 +65,16 @@ const columns: Column[] = [
     id: 'createdBy',
     label: 'Registró',
   },
-  /*{
+  {
     id: 'createdAt',
     label: 'Fecha de Recepción',
-  },*/
+  },
   {
     id: 'assignmentDate',
     label: 'Fecha de Asignación',
   },
   {
-    id: 'scheduledDate',
+    id: 'startDate',
     label: 'Fecha Programada',
   },
   /*{
@@ -165,12 +107,16 @@ export default function Orders(): JSX.Element {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const { setTitle } = useTitleContext();
+  const dispatch = useDispatch();
+  const { data: orders } = useSelector((state: RootState) => state.orders);
+  const [showNewUserDg, setShowNewUserDg] = useState<boolean>(false);
   
 
   const [maxHeight, setMaxHeight] = useState<number>(0);
 
   useEffect(() => {
-    setTitle('Ordenes de Servicio');
+    setTitle('Ordenes de Servio');
+    dispatch(getOrders())
     const handleResize = () => {
       const height = window.innerHeight - 200; // Adjust the offset as needed
       setMaxHeight(height);
@@ -180,18 +126,19 @@ export default function Orders(): JSX.Element {
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [setTitle]);
+  }, [dispatch, setTitle]);
 
-  const handleChangePage = (event: unknown, newPage: number) => {
+  const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
   
-  const getTableCellValue = (value: string, column: Column) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getTableCellValue = (value: any, column: Column) => {
     switch(column.id) {
       case 'actions':
         return (
@@ -215,7 +162,11 @@ export default function Orders(): JSX.Element {
           <Link href="#" underline="none">
             {value}
           </Link>
-        )
+        ) 
+      
+      case 'startDate':
+      case 'createdAt':
+        return formatFullMXDate(value);
         
       default: 
         return (<>{value}</>);
@@ -225,6 +176,7 @@ export default function Orders(): JSX.Element {
 
   return (
     <Grid>
+      <NewOrderDg showNewOrderDg={showNewUserDg} setShowNewOrderDg={setShowNewUserDg} />
       <Grid container spacing={2}>
         <Grid item xs={3}>
           <Box display="flex" alignItems="center">
@@ -253,7 +205,7 @@ export default function Orders(): JSX.Element {
             <Button variant="outlined" size='medium' startIcon={<FilterListIcon/>}>
               Filtros
             </Button>
-            <Button variant="outlined" size='medium' startIcon={<AddBoxIcon/>}>
+            <Button variant="outlined" onClick={() => setShowNewUserDg(true)} size='medium' startIcon={<AddBoxIcon/>}>
               Nueva Orden
             </Button>
           </Box>
@@ -269,7 +221,6 @@ export default function Orders(): JSX.Element {
                     key={column.id}
                     align='center'
                     sx={{color: 'white'}}
-                    
                   >
                     {column.label}
                   </TableCell>
@@ -277,13 +228,13 @@ export default function Orders(): JSX.Element {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows
+              {orders
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
+                .map((order, index) => {
                   return (
                     <TableRow hover role='checkbox' tabIndex={-1} key={index}>
                       {columns.map((column) => {
-                        const value = row[column.id as keyof Data];
+                        const value = order[column.id as keyof Order];
                         return (
                           <TableCell key={column.id} align='center'>
                             {getTableCellValue(value, column)}
@@ -299,7 +250,7 @@ export default function Orders(): JSX.Element {
         <TablePagination
           rowsPerPageOptions={[10, 25, 100]}
           component='div'
-          count={rows.length}
+          count={orders.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

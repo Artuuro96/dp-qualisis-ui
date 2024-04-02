@@ -5,8 +5,8 @@ import { StyledNavItem, StyledNavItemIcon } from './styles';
 import SvgColor from '../SvgColor';
 
 const items = [{
-  path: 'ordenes',
-  title: 'Ordenes',
+  path: 'documentos',
+  title: 'Documentos',
   icon: 'order',
 }, 
 {
@@ -31,7 +31,7 @@ const items = [{
 }];
 
 const fIcon = (name: string) => (
-  <SvgColor src={`assets/icons/${name}.svg`} sx={{ width: 1, height: 1 }} />
+  <SvgColor src={`/assets/icons/${name}.svg`} sx={{ width: 1, height: 1 }} />
 );
 
 export default function NavSection(): JSX.Element {

@@ -33,7 +33,6 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteUser, getUsers, updateUser } from "../../store/reducers/user.reducer";
 import { RootState } from "../../store/reducers/client.reducer";
-import PermissionBoxes from "./PermissionBoxes";
 import { useLoaderContext } from "../../context/LoaderContext";
 import { User } from "../../types/user.interface";
 import { Role } from "../../types/role.interface";
@@ -45,6 +44,7 @@ import { NewUserDg } from "./NewUserDg";
 import { useAlertContext } from "../../context/AlertContext";
 import { getErrorMessage } from "../../utils/get-context.util";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 const style = {
   position: 'absolute',
@@ -72,6 +72,7 @@ export default function Staff(): JSX.Element {
   const { setTitle } = useTitleContext();
   const { setShowLoader } = useLoaderContext();
   const { setAlert } = useAlertContext();
+  const navigate = useNavigate();
   const { data: users, loading, error } = useSelector((state: RootState) => state.users);
   const { data: roles } = useSelector((state: RootState) => state.roles);
   const { data: modules } = useSelector((state: RootState) => state.modules);
@@ -140,13 +141,22 @@ export default function Staff(): JSX.Element {
       setShowLoader(false);
     }
     if(error) {
+      if(error.code === 401) {
+        setAlert({
+          message: 'Su sesión ha expirado por inactividad',
+          type: 'error',
+          isOpen: true,
+        })
+        setTimeout(() => navigate('/'), 3000)
+        return;
+      }
       setAlert({
         message: getErrorMessage(error),
         type: 'error',
         isOpen: true,
       })
     }
-  }, [dispatch, setTitle, loading, setShowLoader, error, users, setAlert]);
+  }, [dispatch, setTitle, loading, setShowLoader, error, users, setAlert, navigate]);
 
   useEffect(() => {
     setTitle('Personal');
@@ -168,7 +178,6 @@ export default function Staff(): JSX.Element {
         <Typography id="modal-modal-title" variant="h6" component="h2">
           Permisos
         </Typography>
-          <PermissionBoxes />
         </Box>
       </Modal>
       <Grid item xs={6} marginBottom={1}>
@@ -296,8 +305,7 @@ export default function Staff(): JSX.Element {
                 id="outlined-basic" 
                 label="Nombre" 
                 value={`${userSelected?.name} ${userSelected?.lastName}`} 
-                variant="outlined" 
-                size="small"
+                variant="outlined"
                 onChange={(event: ChangeEvent<HTMLInputElement>) => setUserSelected({
                   ...userSelected,
                   name: event.target.value.split(' ')[0],
@@ -311,8 +319,7 @@ export default function Staff(): JSX.Element {
                 id="outlined-basic" 
                 label="Nombre de Usuario" 
                 value={userSelected?.username} 
-                variant="outlined" 
-                size="small"
+                variant="outlined"
                 onChange={(event: ChangeEvent<HTMLInputElement>) => setUserSelected({
                   ...userSelected,
                   username: event.target.value
@@ -325,8 +332,7 @@ export default function Staff(): JSX.Element {
                 id="outlined-basic" 
                 label="Email"
                 value={userSelected?.email}
-                variant="outlined" 
-                size="small"
+                variant="outlined"
                 onChange={(event: ChangeEvent<HTMLInputElement>) => setUserSelected({
                   ...userSelected,
                   email: event.target.value
@@ -335,7 +341,7 @@ export default function Staff(): JSX.Element {
               />
             </Grid>
             <Grid item xs={4}>
-            <FormControl sx={{width: '100%' }} size="small">
+            <FormControl sx={{width: '100%' }}>
               <InputLabel id="demo-multiple-checkbox-label">Roles</InputLabel>
               <Select
                 labelId="demo-multiple-checkbox-label"
@@ -357,7 +363,7 @@ export default function Staff(): JSX.Element {
             </FormControl>
             </Grid>
             <Grid item xs={4}>
-              <FormControl sx={{width: '100%' }} size="small">
+              <FormControl sx={{width: '100%' }}>
                 <InputLabel id="demo-multiple-checkbox-label">Modulos</InputLabel>
                 <Select
                   labelId="demo-multiple-checkbox-label"

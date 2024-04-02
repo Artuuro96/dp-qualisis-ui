@@ -60,7 +60,7 @@ export default function LoginRole() {
       });
     }
     if(data.isAuthWithRole) {
-      navigate('/ordenes');
+      navigate('/documentos');
     } 
   }, [error, navigate, setAlert, data])
 

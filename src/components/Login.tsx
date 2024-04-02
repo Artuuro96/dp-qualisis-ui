@@ -43,10 +43,9 @@ export default function Login(): JSX.Element {
         navigate('/');
         return;
       }
-
-      console.log(userContext.roles.length === 1)
       if(userContext?.roles?.length < 2) {
-        navigate('/ordenes')
+        console.log("HOLAAAAAAAA")
+        navigate('/documentos')
         return;
       } else {
         navigate('/loginAs');
