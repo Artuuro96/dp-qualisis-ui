@@ -25,6 +25,12 @@ export const entrySlice = createSlice({
       state.data.push(action.payload);
       state.loading = false;
     },
+    removeEntry: (state: InitialState<Entry[]>, action: PayloadAction<Entry>) => {
+      state.error = null;
+      const filteredEntries = state.data.filter(d => d._id !== action.payload._id);
+      state.data = filteredEntries;
+      state.loading = false; 
+    },
     apiRequested: (state: InitialState<Entry[]>) => {
       state.loading = true;
     },
@@ -38,6 +44,7 @@ export const entrySlice = createSlice({
 export const {
   fetchAllEntries,
   postEntry,
+  removeEntry,
   apiRequested,
   apiRequestedFailed
 } = entrySlice.actions
@@ -64,5 +71,16 @@ export const createEntry = (entry: Entry) => apiCall({
   data: entry,
   onStart: apiRequested.type,
   onSuccess: postEntry.type,
+  onError: apiRequestedFailed.type,
+});
+
+export const deleteEntry = (entryId: string) => apiCall({
+  url: `http://localhost:3000/entries/${entryId}`,
+  method: 'DELETE',
+  headers: {
+    Authorization: `Bearer ${getToken()}`,
+  },
+  onStart: apiRequested.type,
+  onSuccess: removeEntry.type,
   onError: apiRequestedFailed.type,
 });

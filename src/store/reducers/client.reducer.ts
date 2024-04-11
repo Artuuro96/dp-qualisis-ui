@@ -1,8 +1,10 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { InitialState } from "../../types/inital-state.interface";
 import store from "../store";
 import { apiCall } from "../actions/api.action";
 import { Client } from "../../types/client.interface";
+import { getToken } from "../../utils/get-context.util";
+import { Response } from "../../types/order-response";
 
 const initialState: InitialState<Client[]> = {
   data: [] as Client[],
@@ -14,8 +16,8 @@ export const ordersSlice = createSlice({
   name: 'orders',
   initialState,
   reducers: {
-    fetchClients: (state: InitialState<Client[]>, action) => {
-      state.data = action.payload;
+    fetchClients: (state: InitialState<Client[]>, action: PayloadAction<Response<Client[]>>) => {
+      state.data = action.payload.result;
       state.loading = false;
     },
     apiRequested: (state: InitialState<Client[]>) => {
@@ -36,10 +38,10 @@ export const {
 
 export default ordersSlice.reducer;
 
-export const getClients = (token: string) => apiCall({
+export const getClients = () => apiCall({
   url: 'http://localhost:3000/clients/',
   headers: {
-    Authorization: `Bearer ${token}`
+    Authorization: `Bearer ${getToken()}`
   },
   onStart: apiRequested.type,
   onSuccess: fetchClients.type,

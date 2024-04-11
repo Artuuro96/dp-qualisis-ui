@@ -15,8 +15,19 @@ export interface User {
   modules: Module[];
   password?: string;
   createdAt?: string;
+  worker: Worker,
   activeRole: {
     id: string;
     name: string;
   };
+}
+
+export interface Worker {
+  id: string;
+  name: string;
+  lastName: string;
+  secondLastName: string;
+  username: string;
+  email: string;
+  activeRole: string | null;
 }

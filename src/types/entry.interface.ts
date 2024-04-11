@@ -4,6 +4,6 @@ export interface Entry {
   updatedAt: string,
   clientId: string,
   description: string,
-  name: string;
+  entryNumber: string,
   _id: string;
 }
