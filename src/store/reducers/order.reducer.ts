@@ -20,9 +20,14 @@ export const moduleSlice = createSlice({
       state.data = action.payload.result;
       state.loading = false;
     },
+    fetchOrdersByDateRange: (state: InitialState<Order[]>, action: PayloadAction<Response<Order[]>>) => {
+      state.error = null;
+      state.data = action.payload.result;
+    },
     postOrder: (state: InitialState<Order[]>, action: PayloadAction<Order>) => {
       state.error = null;
-      state.data.push(action.payload)
+      state.data.push(action.payload);
+      state.loading = false;
     },
     apiRequested: (state: InitialState<Order[]>) => {
       state.loading = true;
@@ -35,6 +40,7 @@ export const moduleSlice = createSlice({
 });
 
 export const {
+  fetchOrdersByDateRange,
   fetchAllOrders,
   postOrder,
   apiRequested,
@@ -62,6 +68,17 @@ export const createOrder = (order: Order) => apiCall({
     Authorization: `Bearer ${getToken()}`
   },
   onStart: apiRequested.type,
-  onSuccess: fetchAllOrders.type,
+  onSuccess: postOrder.type,
   onError: apiRequestedFailed.type,
 });
+
+export const getOrdersByDateRange = (startDate: string, endDate: string) => apiCall({
+  url: `http://localhost:3000/orders/by-dates?startDate=${startDate}&endDate=${endDate}`,
+  method: 'GET',
+  headers: {
+    Authorization: `Bearer ${getToken()}`,
+  },
+  onStart: apiRequested.type,
+  onSuccess: fetchOrdersByDateRange.type,
+  onError: apiRequestedFailed.type,
+})

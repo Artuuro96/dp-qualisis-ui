@@ -19,6 +19,8 @@ import { Instrument } from "../../../types/instrument.interface";
 import { createEntry } from "../../../store/reducers/entry.reducer";
 import { Entry } from "../../../types/entry.interface";
 import { ChipData } from "../../../types/chip.interface";
+import { useAlertContext } from "../../../context/AlertContext";
+import { getErrorMessage } from "../../../utils/get-context.util";
 
 export function NewEntryDg({ 
   showNewEntryDg, 
@@ -28,12 +30,13 @@ export function NewEntryDg({
   setShowNewEntryDg: Dispatch<SetStateAction<boolean>>;
 }): JSX.Element {
   const dispatch = useDispatch();
+  const { setAlert } = useAlertContext();
   const [newEntry, setNewEntry] = useState<Entry>({} as Entry);
   const [showChildDg, setShowChildDg] = useState<boolean>(false);
   const [showAddInstrument, setShowAddInstrument] = useState<boolean>(false);
   const [recentEntry, setRecentEntry] = useState<Entry>({} as Entry);
   const { data: clients } = useSelector((state: RootState) => state.clients);
-  const { data: entries } = useSelector((state: RootState) => state.entries);
+  const { data: entries, error: entryError } = useSelector((state: RootState) => state.entries);
   const { data: instruments } = useSelector((state: RootState) => state.instruments);
   const [chipData, setChipData] = useState<ChipData[]>([]);
 
@@ -43,9 +46,17 @@ export function NewEntryDg({
   }, [dispatch]);
 
   useEffect(() => {
+    if(entryError) {
+      setAlert({
+        type: 'error',
+        message: getErrorMessage(entryError),
+        isOpen: true,
+      });
+      return;
+    }
     setRecentEntry(entries[entries.length - 1]);
     dispatch(getInstrumentsByEntryId());
-  }, [dispatch, entries]);
+  }, [dispatch, entries, entryError, setAlert]);
 
   useEffect(() => {
     const instrumentChipData = instruments.map((instrument) => {
@@ -58,6 +69,7 @@ export function NewEntryDg({
   }, [instruments])
 
   const onSaveEntry = async() => {
+    console.log("NEW ENTRY", newEntry)
     dispatch(createEntry(newEntry));
     setShowAddInstrument(true);
   }
@@ -75,7 +87,6 @@ export function NewEntryDg({
     >
       <DialogTitle>{showAddInstrument ? 'Nuevo Instrumento' : 'Nueva Entrada'}</DialogTitle>
       <DialogContent>
-        
           <Grid container spacing={2} padding={1}>
             <Grid item xs={6}>
               <TextField 
@@ -179,9 +190,14 @@ function ChildModal({
   } as Instrument);
 
   const onSaveInstrument = async() => {
-    console.log(newInstrument)
     dispatch(createInstrument(newInstrument));
     setShowChildDg(false);
+    setNewInstrument({
+      name: "",
+      description: "",
+      type: "",
+      entryId: entry?._id,
+    } as Instrument);
   }
   return (
     <React.Fragment>
@@ -205,7 +221,7 @@ function ChildModal({
                 ...newInstrument,
                 name: event.target.value
               })}
-               
+              fullWidth
             />
           </Grid>
           <Grid item xs={6}>
@@ -218,7 +234,7 @@ function ChildModal({
                 ...newInstrument,
                 type: event.target.value
               })}
-               
+              fullWidth
             />
           </Grid>
           <Grid item xs={12}>
@@ -227,7 +243,7 @@ function ChildModal({
               label="Descripción"
               multiline
               rows={2}
-               
+              fullWidth
               placeholder="Placeholder"
               value={newInstrument.description}
               onChange={(event: ChangeEvent<HTMLInputElement>) => setNewInstrument({

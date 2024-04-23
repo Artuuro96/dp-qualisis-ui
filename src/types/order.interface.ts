@@ -1,5 +1,6 @@
 import { OrderStatus } from "../enum/order-status.enum"
 import { Instrument } from "./instrument.interface"
+import { Worker } from "./user.interface"
 
 export interface Order {
   deleted: boolean,
@@ -13,5 +14,6 @@ export interface Order {
   description: string,
   endDate: string,
   startDate: string,
-  instruments: Instrument[]
+  instruments: Instrument[],
+  worker?: Worker
 }

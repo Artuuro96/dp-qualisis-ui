@@ -24,16 +24,13 @@ import { NewOrderDg } from './NewOrderDg';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { formatDate } from '../../../utils/date.util';
+import { Order } from '../../../types/order.interface';
 
 interface Column {
   id: string;
   label: string;
 }
 const columns: Column[] = [
-  {
-    id: 'entryNumber',
-    label: 'No. Entrada',
-  },
   {
     id: 'name',
     label: 'Orden de Servicio',
@@ -103,13 +100,14 @@ export default function Orders(): JSX.Element {
   const dispatch = useDispatch();
   const { data: orders } = useSelector((state: RootState) => state.orders);
   const [showNewUserDg, setShowNewUserDg] = useState<boolean>(false);
+  const [ordersFiltered, setOrdersFiltered] = useState<Order[]>([]);
   
 
   const [maxHeight, setMaxHeight] = useState<number>(0);
 
   useEffect(() => {
     setTitle('Ordenes de Servicio');
-    dispatch(getOrders())
+    dispatch(getOrders());
     const handleResize = () => {
       const height = window.innerHeight - 200; // Adjust the offset as needed
       setMaxHeight(height);
@@ -120,6 +118,11 @@ export default function Orders(): JSX.Element {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [dispatch, setTitle]);
+
+  const onFilterOrders = (event: ChangeEvent<HTMLInputElement>) => {
+    const filtered = orders.filter(order => order.name.includes(event.target.value));
+    setOrdersFiltered(filtered);
+  };
 
   const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
@@ -134,16 +137,19 @@ export default function Orders(): JSX.Element {
     <Grid>
       <NewOrderDg showNewOrderDg={showNewUserDg} setShowNewOrderDg={setShowNewUserDg} />
       <Grid container spacing={2}>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <Box display="flex" alignItems="center">
-            <TextField id="outlined-basic" label="No. Orden / Entrada" variant="outlined" size='small' fullWidth />
+            <TextField 
+              id="outlined-basic" 
+              label="No. Orden / Entrada" 
+              variant="outlined" 
+              size='small' 
+              fullWidth 
+              onChange={onFilterOrders}
+            />
           </Box>
         </Grid>
-        <Grid item xs={3}>
-          <Box display="flex" alignItems='flex-start'>
-            <Button variant='contained' color="secondary">Buscar</Button>
-          </Box>
-        </Grid>
+        <Grid item xs={2} />
         <Grid item xs={6}>
           <Box display="flex" alignItems="center" justifyContent='flex-end' gap={1}>
             <Button 
@@ -175,14 +181,11 @@ export default function Orders(): JSX.Element {
               </TableRow>
             </TableHead>
             <TableBody>
-              {orders
+              {ordersFiltered
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((order, index) => {
                   return (
                     <TableRow hover role='checkbox' tabIndex={-1} key={order.name + index}>
-                      <TableCell align='center'>
-                        {order.name}
-                      </TableCell>
                       <TableCell align='center'>
                         {order.name}
                       </TableCell>

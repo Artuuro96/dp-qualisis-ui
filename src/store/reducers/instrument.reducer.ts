@@ -44,8 +44,8 @@ export const {
 
 export default entrySlice.reducer;
 
-export const getInstrumentsByEntryId = () => apiCall({
-  url: 'http://localhost:3000/instruments',
+export const getInstrumentsByEntryId = (entryId: string) => apiCall({
+  url: `http://localhost:3000/instruments/entry/${entryId}`,
   method: 'GET',
   headers: {
     Authorization: `Bearer ${getToken()}`

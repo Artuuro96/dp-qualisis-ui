@@ -23,21 +23,17 @@ function stringToColor(string: string) {
 
 function stringAvatar(name: string) {
   return {
-    sx: {
-      bgcolor: stringToColor(name),
-    },
-    children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+    children: `${name.split('')[0][0]}${name.split('')[1][0]}`,
   };
 }
 
-export default function EventList() {
+export default function EventList({ names }: { names: string[] }) {
   return (
     <AvatarGroup max={4}>
-      <Avatar {...stringAvatar('Arturo Rodriguez')} />
-      <Avatar {...stringAvatar('Daniela Martinez')} />
-      <Avatar {...stringAvatar('Javier Hernandez')} />
-      <Avatar {...stringAvatar('Fernando Beltran')} />
-      <Avatar {...stringAvatar('Oscar Ramirez')} />
+      { names.map(name => (
+        <Avatar {...stringAvatar(name || '')} />
+      ))}
+      
     </AvatarGroup>
   );
 }

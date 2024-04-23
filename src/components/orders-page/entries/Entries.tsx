@@ -33,6 +33,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { formatDate } from '../../../utils/date.util';
 import { Entry } from '../../../types/entry.interface';
+import { useAlertContext } from '../../../context/AlertContext';
+import { useLoaderContext } from '../../../context/LoaderContext';
+import { useNavigate } from 'react-router-dom';
+import { getErrorMessage } from '../../../utils/get-context.util';
 
 const columns: Column[] = [
   {
@@ -75,10 +79,14 @@ export function Entries() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const dispatch = useDispatch();
   const [maxHeight, setMaxHeight] = useState<number>(0);
-  const { data: entries } = useSelector((state: RootState) => state.entries);
+  const { setAlert } = useAlertContext();
+  const { setShowLoader } = useLoaderContext();
+  const navigate = useNavigate();
+  const { data: entries, error, loading } = useSelector((state: RootState) => state.entries);
   const [showNewEntryDg, setShowNewEntryDg] = useState<boolean>(false);
   const [openConfirmDg, setOpenConfirmDg] = useState<boolean>(false);
   const [entrySelected, setEntrySelected] = useState<Entry>({} as Entry);
+  const [entriesFiltered, setEntriesFiltered] = useState<Entry[]>([]);
 
   const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
@@ -100,7 +108,13 @@ export function Entries() {
     setPage(0);
   };
 
+  const onFilterEntries = (event: ChangeEvent<HTMLInputElement>) => {
+    const filtered = entries.filter(entry => entry.entryNumber.includes(event.target.value));
+    setEntriesFiltered(filtered);
+  };
+
   useEffect(() => {
+    dispatch(getEntries());
     const handleResize = () => {
       const height = window.innerHeight - 200; // Adjust the offset as needed
       setMaxHeight(height);
@@ -111,8 +125,28 @@ export function Entries() {
   }, []);
 
   useEffect(() => {
-    dispatch(getEntries());
-  }, [dispatch]);
+    // setShowLoader(true)
+    // if(!loading) {
+    //   setShowLoader(false);
+    // }
+    if(error) {
+      if(error.code === 401) {
+        setAlert({
+          message: 'Su sesión ha expirado por inactividad',
+          type: 'error',
+          isOpen: true,
+        })
+        setTimeout(() => navigate('/'), 3000)
+        return;
+      }
+      setAlert({
+        message: getErrorMessage(error),
+        type: 'error',
+        isOpen: true,
+      })
+    }
+    setEntriesFiltered(entries);
+  }, [dispatch, loading, setShowLoader, error, entries, setAlert, navigate]);
   
   return (
     <Grid>
@@ -135,16 +169,19 @@ export function Entries() {
       </Dialog>
       <NewEntryDg showNewEntryDg={showNewEntryDg} setShowNewEntryDg={setShowNewEntryDg} />
       <Grid container spacing={2}>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <Box display="flex" alignItems="center">
-            <TextField id="outlined-basic" label="No. Orden / Entrada" variant="outlined" size='small' fullWidth />
+            <TextField 
+              id="outlined-basic" 
+              label="No. Orden / Entrada" 
+              variant="outlined" 
+              onChange={onFilterEntries}
+              size='small' 
+              fullWidth 
+            />
           </Box>
         </Grid>
-        <Grid item xs={3}>
-          <Box display="flex" alignItems='flex-start'>
-            <Button variant='contained'>Buscar</Button>
-          </Box>
-        </Grid>
+        <Grid item xs={2} />
         <Grid item xs={6}>
           <Box display="flex" alignItems="center" justifyContent='flex-end' gap={1}>
             <Button 
@@ -175,7 +212,7 @@ export function Entries() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {(entries)
+              {(entriesFiltered)
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((entry) => {
                   return (

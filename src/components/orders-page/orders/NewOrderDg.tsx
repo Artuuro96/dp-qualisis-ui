@@ -47,7 +47,6 @@ export function NewOrderDg({
   const { data: instruments } = useSelector((state: RootState) => state.instruments);
 
   const onSaveOrder = async() => {
-    console.log(newOrder)
     dispatch(createOrder(newOrder));
     setShowNewOrderDg(false);
   }
@@ -80,7 +79,6 @@ export function NewOrderDg({
   }
   
   const onSelectInstrument = (event: SelectChangeEvent<string[]>) => {
-    console.log(event.target.value, instruments)
     const instrumentIds = event.target.value as string[];
     const instrumentsIdsAssigned: Instrument[] = [];
     instrumentIds.forEach(instrumentId => {
@@ -108,16 +106,24 @@ export function NewOrderDg({
       endDate: value?.toISOString() || new Date().toISOString()
     });
   };
+
+  const onChangeEntry = (entryNumber: string | null) => {
+    const entryFound = entries.find(entry => entry.entryNumber === entryNumber);
+    if(!entryFound)
+      return;
+
+    dispatch(getInstrumentsByEntryId(entryFound._id));
+  }
   
   useEffect(() => {
     dispatch(getUsers());
     dispatch(getEntries());
-    dispatch(getInstrumentsByEntryId())
   }, [dispatch]);
+
+  
 
   return (
     <Dialog
-       
       maxWidth='md'
       open={showNewOrderDg}
       onClose={() => setShowNewOrderDg(false)}
@@ -131,6 +137,7 @@ export function NewOrderDg({
               freeSolo
               options={entries?.map((entry) => entry.entryNumber)}
               renderInput={(params) => <TextField {...params} label="No. Entrada"/>}
+              onChange={(_, newValue) => onChangeEntry(newValue)}
               fullWidth
             />
           </Grid>
