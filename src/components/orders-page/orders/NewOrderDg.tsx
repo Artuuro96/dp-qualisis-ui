@@ -136,6 +136,7 @@ export function NewOrderDg({
               id="client-search"
               freeSolo
               options={entries?.map((entry) => entry.entryNumber)}
+              getOptionLabel={(option) => option}
               renderInput={(params) => <TextField {...params} label="No. Entrada"/>}
               onChange={(_, newValue) => onChangeEntry(newValue)}
               fullWidth

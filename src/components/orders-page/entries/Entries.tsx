@@ -109,7 +109,7 @@ export function Entries() {
   };
 
   const onFilterEntries = (event: ChangeEvent<HTMLInputElement>) => {
-    const filtered = entries.filter(entry => entry.entryNumber.includes(event.target.value));
+    const filtered = entries.filter(entry => entry.entryNumber?.includes(event.target.value));
     setEntriesFiltered(filtered);
   };
 
@@ -206,7 +206,7 @@ export function Entries() {
                     key={column.id}
                     align={'left'}
                   >
-                    {column.label}
+                    {column?.label}
                   </TableCell>
                 ))}
               </TableRow>
