@@ -100,7 +100,7 @@ export default function Orders(): JSX.Element {
   const dispatch = useDispatch();
   const { data: orders } = useSelector((state: RootState) => state.orders);
   const [showNewUserDg, setShowNewUserDg] = useState<boolean>(false);
-  const [ordersFiltered, setOrdersFiltered] = useState<Order[]>([]);
+  const [ordersFiltered, setOrdersFiltered] = useState<Order[]>(orders);
   
 
   const [maxHeight, setMaxHeight] = useState<number>(0);

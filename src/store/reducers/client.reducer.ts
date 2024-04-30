@@ -17,7 +17,19 @@ export const ordersSlice = createSlice({
   initialState,
   reducers: {
     fetchClients: (state: InitialState<Client[]>, action: PayloadAction<Response<Client[]>>) => {
+      state.error = null;
       state.data = action.payload.result;
+      state.loading = false;
+    },
+    postClient: (state: InitialState<Client[]>, action: PayloadAction<Client>) => {
+      state.error = null;
+      state.data.push(action.payload);
+      state.loading = false;
+    },
+    removeClient: (state: InitialState<Client[]>, action: PayloadAction<Client>) => {
+      state.error = null;
+      const clients = state.data.filter(client => client._id !== action.payload._id);
+      state.data = clients;
       state.loading = false;
     },
     apiRequested: (state: InitialState<Client[]>) => {
@@ -34,6 +46,8 @@ export const {
   apiRequested,
   apiRequestedFailed,
   fetchClients,
+  postClient,
+  removeClient,
 } = ordersSlice.actions;
 
 export default ordersSlice.reducer;
@@ -45,6 +59,29 @@ export const getClients = () => apiCall({
   },
   onStart: apiRequested.type,
   onSuccess: fetchClients.type,
+  onError: apiRequestedFailed.type,
+});
+
+export const createClient = (client: Client) => apiCall({
+  url: 'http://localhost:3000/clients/',
+  method: 'POST',
+  data: client,
+  headers: {
+    Authorization: `Bearer ${getToken()}`
+  },
+  onStart: apiRequested.type,
+  onSuccess: postClient.type,
+  onError: apiRequestedFailed.type,
+});
+
+export const deleteClient = (id: string) => apiCall({
+  url: `http://localhost:3000/clients/${id}`,
+  method: 'DELETE',
+  headers: {
+    Authorization: `Bearer ${getToken()}`
+  },
+  onStart: apiRequested.type,
+  onSuccess: removeClient.type,
   onError: apiRequestedFailed.type,
 });
 

@@ -14,7 +14,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getUsers } from "../../../store/reducers/user.reducer";
 import MultiChip from "../../custom/MultiChip";
 import React from "react";
-import { createInstrument, getInstrumentsByEntryId } from "../../../store/reducers/instrument.reducer";
+import { createInstrument } from "../../../store/reducers/instrument.reducer";
 import { Instrument } from "../../../types/instrument.interface";
 import { createEntry } from "../../../store/reducers/entry.reducer";
 import { Entry } from "../../../types/entry.interface";
@@ -55,7 +55,6 @@ export function NewEntryDg({
       return;
     }
     setRecentEntry(entries[entries.length - 1]);
-    dispatch(getInstrumentsByEntryId());
   }, [dispatch, entries, entryError, setAlert]);
 
   useEffect(() => {
