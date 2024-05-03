@@ -181,7 +181,7 @@ export default function Orders(): JSX.Element {
               </TableRow>
             </TableHead>
             <TableBody>
-              {ordersFiltered
+              {(ordersFiltered.length > 0 ? ordersFiltered : orders)
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((order, index) => {
                   return (

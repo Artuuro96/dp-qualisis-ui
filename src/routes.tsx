@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import { Navigate, RouteObject, useRoutes } from 'react-router-dom';
 import Login from './components/Login';
 import Orders from './components/orders-page/orders/Orders.tsx';
-import Staff from './components/staff/Staff.tsx';
+import Staff from './components/Staff/Staff.tsx';
 import Frame from './components/frame/Frame.tsx';
 import Assignments from './components/Assignments.tsx';
 import Clients from './components/clients/Clients.tsx';

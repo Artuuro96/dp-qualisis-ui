@@ -11,8 +11,8 @@ const initialState: InitialState<Order[]> = {
   error: null,
 }
 
-export const moduleSlice = createSlice({
-  name: 'modules',
+export const orderSlice = createSlice({
+  name: 'orders',
   initialState,
   reducers: {
     fetchAllOrders: (state: InitialState<Order[]>, action: PayloadAction<Response<Order[]>>) => {
@@ -45,9 +45,9 @@ export const {
   postOrder,
   apiRequested,
   apiRequestedFailed,
-} = moduleSlice.actions;
+} = orderSlice.actions;
 
-export default moduleSlice.reducer;
+export default orderSlice.reducer;
 
 export const getOrders = () => apiCall({
   url: 'http://localhost:3000/orders',
