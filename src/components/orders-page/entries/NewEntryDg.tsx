@@ -68,7 +68,6 @@ export function NewEntryDg({
   }, [instruments])
 
   const onSaveEntry = async() => {
-    console.log("NEW ENTRY", newEntry)
     dispatch(createEntry(newEntry));
     setShowAddInstrument(true);
   }
@@ -189,6 +188,7 @@ function ChildModal({
   } as Instrument);
 
   const onSaveInstrument = async() => {
+    newInstrument.entryId = entry?._id;
     dispatch(createInstrument(newInstrument));
     setShowChildDg(false);
     setNewInstrument({

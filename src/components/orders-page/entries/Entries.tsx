@@ -45,7 +45,7 @@ const columns: Column[] = [
   },
   {
     id: 'clientId', 
-    label: 'ID Cliente'},
+    label: 'Cliente'},
   {
     id: 'description',
     label: 'Descripcion',
@@ -109,6 +109,7 @@ export function Entries() {
   };
 
   const onFilterEntries = (event: ChangeEvent<HTMLInputElement>) => {
+    console.log(entries)
     const filtered = entries.filter(entry => entry.entryNumber?.includes(event.target.value));
     setEntriesFiltered(filtered);
   };
@@ -159,7 +160,7 @@ export function Entries() {
         <DialogTitle>Espera un momento</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
-            Estas seguro que deseas eliminar este registro?
+            ¿Estas seguro que deseas eliminar este registro?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -221,13 +222,13 @@ export function Entries() {
                         <Link>{entry.entryNumber}</Link>
                       </TableCell>
                       <TableCell>
-                        {entry.clientId}
+                        {entry.client.name}
                       </TableCell>
                       <TableCell>
                         {entry.description}
                       </TableCell>
                       <TableCell>
-                        {entry.createdBy}
+                        {entry.createdBy.username}
                       </TableCell>
                       <TableCell>
                         {formatDate(entry.createdAt)}

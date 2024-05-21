@@ -42,20 +42,27 @@ export function NewOrderDg({
 }): JSX.Element {
   const dispatch = useDispatch();
   const [newOrder, setNewOrder] = useState<Order>({} as Order);
+  
   const { data: users } = useSelector((state: RootState) => state.users);
   const { data: entries } = useSelector((state: RootState) => state.entries);
   const { data: instruments } = useSelector((state: RootState) => state.instruments);
 
   const onSaveOrder = async() => {
     dispatch(createOrder(newOrder));
+    setNewOrder({} as Order);
     setShowNewOrderDg(false);
+  }
+
+  const handleCloseDialog = () => {
+    setShowNewOrderDg(false);
+    setNewOrder({} as Order);
   }
 
   const onAutocompleteVendorSelection = (username: string | null) => {
     const user = users.find(user => user.username === username);
     setNewOrder({
       ...newOrder,
-      workerId: user?.id || '',
+      vendorId: user?.id || '',
     });
   }
 
@@ -74,7 +81,7 @@ export function NewOrderDg({
     const user = users.find(user => user.username === username);
     setNewOrder({
       ...newOrder,
-      vendorId: user?.id || '',
+      workerId: user?.id || '',
     });
   }
   
@@ -126,7 +133,7 @@ export function NewOrderDg({
     <Dialog
       maxWidth='md'
       open={showNewOrderDg}
-      onClose={() => setShowNewOrderDg(false)}
+      onClose={handleCloseDialog}
     >
       <DialogTitle>Nueva Orden</DialogTitle>
       <DialogContent>
@@ -159,7 +166,7 @@ export function NewOrderDg({
           </Grid>
           <Grid item xs={4}>
             <Autocomplete
-              id="client-search"
+              id="vendor-search"
               freeSolo
               options={users?.map((user) => user.username) || []}
               renderInput={(params) => <TextField {...params} label="Vendedor"/>}
@@ -170,7 +177,7 @@ export function NewOrderDg({
           </Grid> 
           <Grid item xs={4}>
             <Autocomplete
-              id="client-search"
+              id="assigned-search"
               freeSolo
               options={users?.map((user) => user.username) || []}
               renderInput={(params) => <TextField {...params} label="Asignado a"/>}

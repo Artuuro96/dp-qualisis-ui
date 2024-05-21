@@ -12,14 +12,21 @@ import {
   Paper,
   Box,
   IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Slide,
 } from '@mui/material';
+import { TransitionProps } from '@mui/material/transitions';
 import { useTitleContext } from '../../../context/TitleContext';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useState, useEffect, forwardRef, ReactElement } from 'react';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../store/reducers/client.reducer';
-import { getOrders } from '../../../store/reducers/order.reducer';
+import { getOrders, deleteOrder } from '../../../store/reducers/order.reducer';
 import { NewOrderDg } from './NewOrderDg';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -93,14 +100,25 @@ const columns: Column[] = [
   }
 ];
 
+const Transition = forwardRef(function Transition(
+  props: TransitionProps & {
+    children: ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 export default function Orders(): JSX.Element {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const { setTitle } = useTitleContext();
   const dispatch = useDispatch();
   const { data: orders } = useSelector((state: RootState) => state.orders);
-  const [showNewUserDg, setShowNewUserDg] = useState<boolean>(false);
+  const [showNewOrderDg, setShowNewOrderDg] = useState<boolean>(false);
   const [ordersFiltered, setOrdersFiltered] = useState<Order[]>(orders);
+  const [openConfirmDg, setOpenConfirmDg] = useState<boolean>(false);
+  const [orderSelected, setOrderSelected] = useState<Order>({} as Order);
   
 
   const [maxHeight, setMaxHeight] = useState<number>(0);
@@ -124,6 +142,22 @@ export default function Orders(): JSX.Element {
     setOrdersFiltered(filtered);
   };
 
+  useEffect(() => {
+    setOrdersFiltered(orders)
+  }, [orders])
+
+  const onDeleteOrder = (order: Order) => {
+    setOrderSelected(order);
+    setOpenConfirmDg(true);
+  }
+
+  const onConfirmOrderDeletion = () => {
+    console.log("delete")
+    dispatch(deleteOrder(orderSelected._id));
+    setOpenConfirmDg(false);
+    setOrderSelected({} as Order);
+  }
+
   const handleChangePage = (_event: unknown, newPage: number) => {
     setPage(newPage);
   };
@@ -135,7 +169,25 @@ export default function Orders(): JSX.Element {
 
   return (
     <Grid>
-      <NewOrderDg showNewOrderDg={showNewUserDg} setShowNewOrderDg={setShowNewUserDg} />
+      <NewOrderDg showNewOrderDg={showNewOrderDg} setShowNewOrderDg={setShowNewOrderDg} />
+      <Dialog
+        open={openConfirmDg}
+        TransitionComponent={Transition}
+        keepMounted
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>Espera un momento</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            ¿Estas seguro que deseas eliminar este registro?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenConfirmDg(false)} color="error">Cancelar</Button>
+          <Button onClick={onConfirmOrderDeletion}>Confirmar</Button>
+        </DialogActions>
+      </Dialog>
+      
       <Grid container spacing={2}>
         <Grid item xs={4}>
           <Box display="flex" alignItems="center">
@@ -155,7 +207,7 @@ export default function Orders(): JSX.Element {
             <Button 
               variant="contained" 
               color="secondary" 
-              onClick={() => setShowNewUserDg(true)} 
+              onClick={() => setShowNewOrderDg(true)} 
               size='medium' 
               startIcon={<AddBoxIcon/>}
             >
@@ -190,7 +242,7 @@ export default function Orders(): JSX.Element {
                         {order.name}
                       </TableCell>
                       <TableCell align='center'>
-                        {order.createdBy}
+                        {order.creator?.username ? order.creator?.username : order.vendor?.username  }
                       </TableCell>
                       <TableCell align='center'>
                         {order.createdAt ? formatDate(order.createdAt) : ''}
@@ -202,7 +254,7 @@ export default function Orders(): JSX.Element {
                         {order.endDate ? formatDate(order.endDate) : ''}
                       </TableCell>
                       <TableCell align='center'>
-                        {order.vendorId}
+                        {order.vendor?.username}
                       </TableCell>
                       <TableCell align='center'>
                         {order.status}
@@ -211,7 +263,7 @@ export default function Orders(): JSX.Element {
                         <IconButton aria-label="edit">
                           <EditIcon />
                         </IconButton>
-                        <IconButton aria-label="delete">
+                        <IconButton aria-label="delete" onClick={() => onDeleteOrder(order)}>
                           <DeleteIcon />
                         </IconButton>
                       </TableCell>

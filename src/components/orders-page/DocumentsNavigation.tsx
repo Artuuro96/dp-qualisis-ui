@@ -39,29 +39,8 @@ export function DocumentsNavigation(): JSX.Element {
             label="Ordenes" 
             onClick={() => navigate("/documentos/ordenes")}
           />
-          <Grid container justifyContent="flex-end" marginTop={2} marginBottom={0.5} >
-            <Button 
-              size='small' 
-              variant="outlined"
-              sx={{
-                width: '10%',
-                marginRight: 0.5
-              }}
-              startIcon={<GetAppIcon/>}
-            >
-              Importar
-            </Button>
-            <Button 
-              color={value === 0 ? "primary" : "secondary"}
-              variant="outlined" 
-              size='small' 
-              sx={{
-                width: '10%',
-              }}
-              startIcon={<FileUploadIcon/>}
-            >
-              Exportar
-            </Button>
+         <Grid container justifyContent="flex-end" marginTop={2} marginBottom={0.5} >
+            
           </Grid>
         </Tabs>
       </Box>

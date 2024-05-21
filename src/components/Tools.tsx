@@ -3,6 +3,7 @@ import { Typography, Button, ListItem, Box, TextField, IconButton, Grid, Tabs, T
 import { useTitleContext } from "../context/TitleContext";
 import DeleteIcon from '@mui/icons-material/Delete';
 import ClearAllIcon from '@mui/icons-material/ClearAll';
+import { getToken } from "../utils/get-context.util";
 
 export default function Tools(): JSX.Element {
   const { setTitle } = useTitleContext();
@@ -41,10 +42,45 @@ export default function Tools(): JSX.Element {
   };
 
   const handleUpload = () => {
-    // Aquí puedes manejar la lógica de subida de archivos
-    // Por ejemplo, puedes enviar los archivos al servidor para procesarlos
-    console.log("Archivos seleccionados:", selectedFiles);
+    const formData = new FormData();
+    selectedFiles.forEach((file, index) => {
+      formData.append(`file${index + 1}`, file);
+    });
+    formData.append('startDate', startDate);
+    formData.append('endDate', endDate);
+    formData.append('deviceName', 'Dispositivo');
+  
+    fetch('http://localhost:3000/utils/merge-excels', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Authorization': `Bearer ${getToken()}`,
+      },
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error en la petición');
+      }
+      return response.blob();
+    })
+    .then(blob => {
+      const url = window.URL.createObjectURL(blob);
+      const fechaActual = new Date().toISOString().slice(0, 10);
+      const nombreArchivo = `output-${fechaActual}.xlsx`;
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', nombreArchivo); 
+      document.body.appendChild(link);
+      link.click();
+      window.URL.revokeObjectURL(url);
+      setSelectedFiles([]);
+    })
+    .catch(error => {
+      console.error('Error al enviar la petición:', error);
+    });
   };
+  
+  
 
   const handleChangeTab = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
@@ -66,7 +102,6 @@ export default function Tools(): JSX.Element {
 
   return (
     <div>
-      <Typography variant="h5">Herramientas</Typography>
       <Tabs value={tabValue} onChange={handleChangeTab}>
         <Tab label="Subir archivos de Excel" />
       </Tabs>

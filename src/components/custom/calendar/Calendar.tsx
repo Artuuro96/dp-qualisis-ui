@@ -157,7 +157,9 @@ export default function Calendar(): JSX.Element {
                     <HtmlTooltip title={
                         <React.Fragment>
                           <Typography color="inherit"><b>Personal Asignado</b></Typography>
-                          {ordersAssigned?.get(day.getDate())?.map(assigned => (<Typography>{assigned}</Typography>)) }
+                          {ordersAssigned?.get(day.getDate())?.map(assigned => (
+                            <Typography>{assigned}</Typography>
+                          )) }
                         </React.Fragment>
                       }>
                       <ChipStyled label={day.getDate()} size="small" color="secondary" />

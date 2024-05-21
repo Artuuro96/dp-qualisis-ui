@@ -29,6 +29,12 @@ export const orderSlice = createSlice({
       state.data.push(action.payload);
       state.loading = false;
     },
+    removeOrder: (state: InitialState<Order[]>, action: PayloadAction<Order>) => {
+      state.error = null;
+      const filteredOrders = state.data.filter(d => d._id !== action.payload._id);
+      state.data = filteredOrders;
+      state.loading = false; 
+    },
     apiRequested: (state: InitialState<Order[]>) => {
       state.loading = true;
     },
@@ -45,6 +51,7 @@ export const {
   postOrder,
   apiRequested,
   apiRequestedFailed,
+  removeOrder,
 } = orderSlice.actions;
 
 export default orderSlice.reducer;
@@ -81,4 +88,15 @@ export const getOrdersByDateRange = (startDate: string, endDate: string) => apiC
   onStart: apiRequested.type,
   onSuccess: fetchOrdersByDateRange.type,
   onError: apiRequestedFailed.type,
-})
+});
+
+export const deleteOrder = (orderId: string) => apiCall({
+  url: `http://localhost:3000/orders/${orderId}`,
+  method: 'DELETE',
+  headers: {
+    Authorization: `Bearer ${getToken()}`,
+  },
+  onStart: apiRequested.type,
+  onSuccess: removeOrder.type,
+  onError: apiRequestedFailed.type,
+});
